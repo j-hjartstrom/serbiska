@@ -11,9 +11,8 @@
   // ============================================================
   // KLISTRA IN DINA API-NYCKLAR HÄR
   // ============================================================
-  const ELEVENLABS_API_KEY = "DIN_ELEVENLABS_NYCKEL_HÄR";
+  const ELEVENLABS_API_KEY = "sk_fd63287ac4553968dd1108924d67a117b737e4c1bca59df4";
   const ELEVENLABS_VOICE_ID = "pNInz6obpgDQGcFmaJgB";
-  const ANTHROPIC_API_KEY  = "DIN_ANTHROPIC_NYCKEL_HÄR";
   // ============================================================
   // Öka DATA_VERSION när du lägger till kapitel → progress bevaras!
   const DATA_VERSION = 3;
@@ -307,41 +306,489 @@ const BONUS_BG=['#fce7f3','#fff7ed','#ede9fe','#fffbeb'];
 // ═══════════════════════════════════════════════════
 // FALLBACK WORDS per chapter
 // ═══════════════════════════════════════════════════
-const FALLBACK = {
-  0:[{swedish:'Hej',serbian:'Zdravo',serbian_latin:'Zdravo',emoji:'👋'},{swedish:'Hejdå',serbian:'Doviđenja',serbian_latin:'Doviđenja',emoji:'🙏'},{swedish:'Tack',serbian:'Hvala',serbian_latin:'Hvala',emoji:'💛'},{swedish:'Varsågod',serbian:'Molim',serbian_latin:'Molim',emoji:'😊'},{swedish:'God morgon',serbian:'Dobro jutro',serbian_latin:'Dobro jutro',emoji:'🌅'}],
-  1:[{swedish:'Ett',serbian:'Jedan',serbian_latin:'Jedan',emoji:'1️⃣'},{swedish:'Två',serbian:'Dva',serbian_latin:'Dva',emoji:'2️⃣'},{swedish:'Tre',serbian:'Tri',serbian_latin:'Tri',emoji:'3️⃣'},{swedish:'Tio',serbian:'Deset',serbian_latin:'Deset',emoji:'🔟'},{swedish:'Tjugo',serbian:'Dvadeset',serbian_latin:'Dvadeset',emoji:'2️⃣0️⃣'}],
-  2:[{swedish:'Röd',serbian:'Crvena',serbian_latin:'Crvena',emoji:'🔴'},{swedish:'Blå',serbian:'Plava',serbian_latin:'Plava',emoji:'🔵'},{swedish:'Grön',serbian:'Zelena',serbian_latin:'Zelena',emoji:'🟢'},{swedish:'Gul',serbian:'Žuta',serbian_latin:'Žuta',emoji:'🟡'},{swedish:'Svart',serbian:'Crna',serbian_latin:'Crna',emoji:'⚫'}],
-  3:[{swedish:'Hund',serbian:'Pas',serbian_latin:'Pas',emoji:'🐶'},{swedish:'Katt',serbian:'Mačka',serbian_latin:'Mačka',emoji:'🐱'},{swedish:'Häst',serbian:'Konj',serbian_latin:'Konj',emoji:'🐴'},{swedish:'Fågel',serbian:'Ptica',serbian_latin:'Ptica',emoji:'🐦'},{swedish:'Björn',serbian:'Medved',serbian_latin:'Medved',emoji:'🐻'}],
-  4:[{swedish:'Vatten',serbian:'Voda',serbian_latin:'Voda',emoji:'💧'},{swedish:'Bröd',serbian:'Hleb',serbian_latin:'Hleb',emoji:'🍞'},{swedish:'Pizza',serbian:'Pica',serbian_latin:'Pica',emoji:'🍕'},{swedish:'Kaffe',serbian:'Kafa',serbian_latin:'Kafa',emoji:'☕'},{swedish:'Äpple',serbian:'Jabuka',serbian_latin:'Jabuka',emoji:'🍎'}],
-  5:[{swedish:'Mamma',serbian:'Mama',serbian_latin:'Mama',emoji:'👩'},{swedish:'Pappa',serbian:'Tata',serbian_latin:'Tata',emoji:'👨'},{swedish:'Syster',serbian:'Sestra',serbian_latin:'Sestra',emoji:'👧'},{swedish:'Bror',serbian:'Brat',serbian_latin:'Brat',emoji:'👦'},{swedish:'Farmor',serbian:'Baka',serbian_latin:'Baka',emoji:'👵'}],
-  6:[{swedish:'Huvud',serbian:'Glava',serbian_latin:'Glava',emoji:'🧠'},{swedish:'Hand',serbian:'Ruka',serbian_latin:'Ruka',emoji:'✋'},{swedish:'Fot',serbian:'Noga',serbian_latin:'Noga',emoji:'🦶'},{swedish:'Hjärta',serbian:'Srce',serbian_latin:'Srce',emoji:'❤️'},{swedish:'Ögon',serbian:'Oči',serbian_latin:'Oči',emoji:'👁️'}],
-  7:[{swedish:'Tröja',serbian:'Majica',serbian_latin:'Majica',emoji:'👕'},{swedish:'Byxor',serbian:'Pantalone',serbian_latin:'Pantalone',emoji:'👖'},{swedish:'Skor',serbian:'Cipele',serbian_latin:'Cipele',emoji:'👟'},{swedish:'Klänning',serbian:'Haljina',serbian_latin:'Haljina',emoji:'👗'},{swedish:'Jacka',serbian:'Jakna',serbian_latin:'Jakna',emoji:'🧥'}],
-  8:[{swedish:'Glad',serbian:'Srećan',serbian_latin:'Srećan',emoji:'😊'},{swedish:'Ledsen',serbian:'Tužan',serbian_latin:'Tužan',emoji:'😢'},{swedish:'Arg',serbian:'Ljut',serbian_latin:'Ljut',emoji:'😠'},{swedish:'Trött',serbian:'Umoran',serbian_latin:'Umoran',emoji:'😴'},{swedish:'Rädd',serbian:'Uplašen',serbian_latin:'Uplašen',emoji:'😨'}],
-  9:[{swedish:'Kök',serbian:'Kuhinja',serbian_latin:'Kuhinja',emoji:'🍳'},{swedish:'Sovrum',serbian:'Spavaća soba',serbian_latin:'Spavaća soba',emoji:'🛏️'},{swedish:'Badrummet',serbian:'Kupatilo',serbian_latin:'Kupatilo',emoji:'🛁'},{swedish:'Bord',serbian:'Sto',serbian_latin:'Sto',emoji:'🪑'},{swedish:'Fönster',serbian:'Prozor',serbian_latin:'Prozor',emoji:'🪟'}],
-  10:[{swedish:'Huset',serbian:'Kuća',serbian_latin:'Kuća',emoji:'🏠'},{swedish:'Skolan',serbian:'Škola',serbian_latin:'Škola',emoji:'🏫'},{swedish:'Parken',serbian:'Park',serbian_latin:'Park',emoji:'🌳'},{swedish:'Sjukhuset',serbian:'Bolnica',serbian_latin:'Bolnica',emoji:'🏥'},{swedish:'Till höger',serbian:'Desno',serbian_latin:'Desno',emoji:'➡️'}],
-  11:[{swedish:'Buss',serbian:'Autobus',serbian_latin:'Autobus',emoji:'🚌'},{swedish:'Tåg',serbian:'Voz',serbian_latin:'Voz',emoji:'🚂'},{swedish:'Bil',serbian:'Auto',serbian_latin:'Auto',emoji:'🚗'},{swedish:'Flygplan',serbian:'Avion',serbian_latin:'Avion',emoji:'✈️'},{swedish:'Cykel',serbian:'Bicikl',serbian_latin:'Bicikl',emoji:'🚲'}],
-  12:[{swedish:'Idag',serbian:'Danas',serbian_latin:'Danas',emoji:'📅'},{swedish:'Imorgon',serbian:'Sutra',serbian_latin:'Sutra',emoji:'🌅'},{swedish:'Måndag',serbian:'Ponedeljak',serbian_latin:'Ponedeljak',emoji:'📆'},{swedish:'Januari',serbian:'Januar',serbian_latin:'Januar',emoji:'❄️'},{swedish:'Klockan tre',serbian:'Tri sata',serbian_latin:'Tri sata',emoji:'🕒'}],
-  13:[{swedish:'Matematik',serbian:'Matematika',serbian_latin:'Matematika',emoji:'➕'},{swedish:'Boken',serbian:'Knjiga',serbian_latin:'Knjiga',emoji:'📚'},{swedish:'Läraren',serbian:'Učitelj',serbian_latin:'Učitelj',emoji:'👩‍🏫'},{swedish:'Läxan',serbian:'Domaći zadatak',serbian_latin:'Domaći zadatak',emoji:'📝'},{swedish:'Klassen',serbian:'Razred',serbian_latin:'Razred',emoji:'🏫'}],
-  14:[{swedish:'Sol',serbian:'Sunce',serbian_latin:'Sunce',emoji:'☀️'},{swedish:'Regn',serbian:'Kiša',serbian_latin:'Kiša',emoji:'🌧️'},{swedish:'Snö',serbian:'Sneg',serbian_latin:'Sneg',emoji:'❄️'},{swedish:'Havet',serbian:'More',serbian_latin:'More',emoji:'🌊'},{swedish:'Blomma',serbian:'Cvet',serbian_latin:'Cvet',emoji:'🌸'}],
-  15:[{swedish:'Pengar',serbian:'Novac',serbian_latin:'Novac',emoji:'💰'},{swedish:'Affären',serbian:'Prodavnica',serbian_latin:'Prodavnica',emoji:'🏪'},{swedish:'Billig',serbian:'Jeftin',serbian_latin:'Jeftin',emoji:'💲'},{swedish:'Dyr',serbian:'Skup',serbian_latin:'Skup',emoji:'💎'},{swedish:'Kvitto',serbian:'Račun',serbian_latin:'Račun',emoji:'🧾'}],
-  16:[{swedish:'Fotboll',serbian:'Fudbal',serbian_latin:'Fudbal',emoji:'⚽'},{swedish:'Simning',serbian:'Plivanje',serbian_latin:'Plivanje',emoji:'🏊'},{swedish:'Musik',serbian:'Muzika',serbian_latin:'Muzika',emoji:'🎵'},{swedish:'Dans',serbian:'Ples',serbian_latin:'Ples',emoji:'💃'},{swedish:'Spel',serbian:'Igra',serbian_latin:'Igra',emoji:'🎮'}],
-  17:[{swedish:'Jag vill',serbian:'Hoću',serbian_latin:'Hoću',emoji:'🙋'},{swedish:'Jag kan',serbian:'Mogu',serbian_latin:'Mogu',emoji:'💪'},{swedish:'Förstå',serbian:'Razumeti',serbian_latin:'Razumeti',emoji:'🧠'},{swedish:'Hjälp!',serbian:'Pomoć!',serbian_latin:'Pomoć!',emoji:'🆘'},{swedish:'Lycka till',serbian:'Srećno',serbian_latin:'Srećno',emoji:'🍀'}],
-  18:[{swedish:'Sjuk',serbian:'Bolestan',serbian_latin:'Bolestan',emoji:'🤒'},{swedish:'Läkare',serbian:'Doktor',serbian_latin:'Doktor',emoji:'👨‍⚕️'},{swedish:'Medicin',serbian:'Lek',serbian_latin:'Lek',emoji:'💊'},{swedish:'Ont i magen',serbian:'Bol u stomaku',serbian_latin:'Bol u stomaku',emoji:'🤢'},{swedish:'Frisk',serbian:'Zdrav',serbian_latin:'Zdrav',emoji:'💚'}],
-  19:[{swedish:'Koka',serbian:'Kuvati',serbian_latin:'Kuvati',emoji:'🍳'},{swedish:'Blanda',serbian:'Mešati',serbian_latin:'Mešati',emoji:'🥣'},{swedish:'Salt',serbian:'So',serbian_latin:'So',emoji:'🧂'},{swedish:'Socker',serbian:'Šećer',serbian_latin:'Šećer',emoji:'🍬'},{swedish:'Recept',serbian:'Recept',serbian_latin:'Recept',emoji:'📋'}],
-  20:[{swedish:'Hotell',serbian:'Hotel',serbian_latin:'Hotel',emoji:'🏨'},{swedish:'Pass',serbian:'Pasoš',serbian_latin:'Pasoš',emoji:'🛂'},{swedish:'Strand',serbian:'Plaža',serbian_latin:'Plaža',emoji:'🏖️'},{swedish:'Karta',serbian:'Mapa',serbian_latin:'Mapa',emoji:'🗺️'},{swedish:'Semester',serbian:'Odmor',serbian_latin:'Odmor',emoji:'🌴'}],
-  21:[{swedish:'Kompis',serbian:'Drug',serbian_latin:'Drug',emoji:'👫'},{swedish:'Fika',serbian:'Kafa i razgovor',serbian_latin:'Kafa i razgovor',emoji:'☕'},{swedish:'Party',serbian:'Žurka',serbian_latin:'Žurka',emoji:'🎉'},{swedish:'Skratta',serbian:'Smejati se',serbian_latin:'Smejati se',emoji:'😂'},{swedish:'Sakna',serbian:'Nedostajati',serbian_latin:'Nedostajati',emoji:'🥺'}],
-  22:[{swedish:'Sång',serbian:'Pesma',serbian_latin:'Pesma',emoji:'🎤'},{swedish:'Slava',serbian:'Slava',serbian_latin:'Slava',emoji:'🕯️'},{swedish:'Turbofolk',serbian:'Turbofolk',serbian_latin:'Turbofolk',emoji:'🎶'},{swedish:'Tradition',serbian:'Tradicija',serbian_latin:'Tradicija',emoji:'🎭'},{swedish:'Rakija',serbian:'Rakija',serbian_latin:'Rakija',emoji:'🥃'}],
-  23:[{swedish:'Jag',serbian:'Ja',serbian_latin:'Ja',emoji:'🙋'},{swedish:'Du',serbian:'Ti',serbian_latin:'Ti',emoji:'👉'},{swedish:'Vi',serbian:'Mi',serbian_latin:'Mi',emoji:'👥'},{swedish:'Är (jag är)',serbian:'Jesam',serbian_latin:'Jesam',emoji:'✅'},{swedish:'Inte',serbian:'Nije',serbian_latin:'Nije',emoji:'❌'}],
-  24:[{swedish:'Nyheter',serbian:'Vesti',serbian_latin:'Vesti',emoji:'📰'},{swedish:'Politik',serbian:'Politika',serbian_latin:'Politika',emoji:'🗳️'},{swedish:'Sport-resultat',serbian:'Sportski rezultati',serbian_latin:'Sportski rezultati',emoji:'🏆'},{swedish:'Ekonomi',serbian:'Ekonomija',serbian_latin:'Ekonomija',emoji:'💹'},{swedish:'Väder-prognos',serbian:'Vremenska prognoza',serbian_latin:'Vremenska prognoza',emoji:'🌤️'}],
-  100:[{swedish:'Jag älskar dig',serbian:'Volim te',serbian_latin:'Volim te',emoji:'❤️'},{swedish:'Du är söt',serbian:'Sladak si',serbian_latin:'Sladak si',emoji:'🥰'},{swedish:'Kramar',serbian:'Zagrljaji',serbian_latin:'Zagrljaji',emoji:'🤗'},{swedish:'Saknar dig',serbian:'Nedostaješ mi',serbian_latin:'Nedostaješ mi',emoji:'🥺'},{swedish:'Pussar',serbian:'Poljupci',serbian_latin:'Poljupci',emoji:'😘'}],
-  101:[{swedish:'Coolt',serbian:'Kul',serbian_latin:'Kul',emoji:'😎'},{swedish:'Toppen',serbian:'Super',serbian_latin:'Super',emoji:'👌'},{swedish:'Inga problem',serbian:'Nema problema',serbian_latin:'Nema problema',emoji:'🤙'},{swedish:'Schysst',serbian:'Frajer',serbian_latin:'Frajer',emoji:'😏'},{swedish:'Seriöst',serbian:'Ozbiljno',serbian_latin:'Ozbiljno',emoji:'🤨'}],
-  102:[{swedish:'Jul',serbian:'Božić',serbian_latin:'Božić',emoji:'🎄'},{swedish:'Slava',serbian:'Slava',serbian_latin:'Slava',emoji:'🕯️'},{swedish:'Beograd',serbian:'Beograd',serbian_latin:'Beograd',emoji:'🏙️'},{swedish:'Folkdans',serbian:'Kolo',serbian_latin:'Kolo',emoji:'💃'},{swedish:'Rakija',serbian:'Rakija',serbian_latin:'Rakija',emoji:'🥃'}],
-  103:[{swedish:'Välkommen till Serbien',serbian:'Dobrodošli u Srbiju',serbian_latin:'Dobrodošli u Srbiju',emoji:'🇷🇸'},{swedish:'Jag pratar serbiska',serbian:'Govorim srpski',serbian_latin:'Govorim srpski',emoji:'🎓'},{swedish:'Förstår du?',serbian:'Razumeš li?',serbian_latin:'Razumeš li?',emoji:'🤔'},{swedish:'Bra gjort',serbian:'Bravo',serbian_latin:'Bravo',emoji:'👏'},{swedish:'Tills nästa gång',serbian:'Do sledećeg puta',serbian_latin:'Do sledećeg puta',emoji:'👋'}],
+const WORDBANK = {
+  0:[
+    {swedish:'Hej',serbian:'Zdravo',serbian_latin:'Zdravo',phonetic:'zdra-vo',emoji:'👋'},
+    {swedish:'Hejdå',serbian:'Doviđenja',serbian_latin:'Doviđenja',phonetic:'do-vi-đe-nya',emoji:'🙏'},
+    {swedish:'Tack',serbian:'Hvala',serbian_latin:'Hvala',phonetic:'hva-la',emoji:'💛'},
+    {swedish:'Varsågod',serbian:'Molim',serbian_latin:'Molim',phonetic:'mo-lim',emoji:'😊'},
+    {swedish:'God morgon',serbian:'Dobro jutro',serbian_latin:'Dobro jutro',phonetic:'do-bro yut-ro',emoji:'🌅'},
+    {swedish:'God kväll',serbian:'Dobro veče',serbian_latin:'Dobro veče',phonetic:'do-bro ve-če',emoji:'🌆'},
+    {swedish:'God natt',serbian:'Laku noć',serbian_latin:'Laku noć',phonetic:'la-ku noć',emoji:'🌙'},
+    {swedish:'Hur mår du?',serbian:'Kako si?',serbian_latin:'Kako si?',phonetic:'ka-ko si',emoji:'🤔'},
+    {swedish:'Bra',serbian:'Dobro',serbian_latin:'Dobro',phonetic:'do-bro',emoji:'👍'},
+    {swedish:'Ja',serbian:'Da',serbian_latin:'Da',phonetic:'da',emoji:'✅'},
+    {swedish:'Nej',serbian:'Ne',serbian_latin:'Ne',phonetic:'ne',emoji:'❌'},
+    {swedish:'Ursäkta',serbian:'Izvinite',serbian_latin:'Izvinite',phonetic:'iz-vi-ni-te',emoji:'🙏'},
+    {swedish:'Förlåt',serbian:'Žao mi je',serbian_latin:'Žao mi je',phonetic:'žao mi ye',emoji:'😔'},
+    {swedish:'Välkommen',serbian:'Dobrodošli',serbian_latin:'Dobrodošli',phonetic:'do-bro-doš-li',emoji:'🎉'},
+    {swedish:'Hej då kompis',serbian:'Ćao',serbian_latin:'Ćao',phonetic:'čao',emoji:'✌️'},
+    {swedish:'God dag',serbian:'Dobar dan',serbian_latin:'Dobar dan',phonetic:'do-bar dan',emoji:'☀️'},
+    {swedish:'Vad heter du?',serbian:'Kako se zoveš?',serbian_latin:'Kako se zoveš?',phonetic:'ka-ko se zo-veš',emoji:'🏷️'},
+    {swedish:'Jag heter...',serbian:'Zovem se...',serbian_latin:'Zovem se...',phonetic:'zo-vem se',emoji:'🙋'},
+  ],
+  1:[
+    {swedish:'Ett',serbian:'Jedan',serbian_latin:'Jedan',phonetic:'ye-dan',emoji:'1️⃣'},
+    {swedish:'Två',serbian:'Dva',serbian_latin:'Dva',phonetic:'dva',emoji:'2️⃣'},
+    {swedish:'Tre',serbian:'Tri',serbian_latin:'Tri',phonetic:'tri',emoji:'3️⃣'},
+    {swedish:'Fyra',serbian:'Četiri',serbian_latin:'Četiri',phonetic:'če-ti-ri',emoji:'4️⃣'},
+    {swedish:'Fem',serbian:'Pet',serbian_latin:'Pet',phonetic:'pet',emoji:'5️⃣'},
+    {swedish:'Sex',serbian:'Šest',serbian_latin:'Šest',phonetic:'šest',emoji:'6️⃣'},
+    {swedish:'Sju',serbian:'Sedam',serbian_latin:'Sedam',phonetic:'se-dam',emoji:'7️⃣'},
+    {swedish:'Åtta',serbian:'Osam',serbian_latin:'Osam',phonetic:'o-sam',emoji:'8️⃣'},
+    {swedish:'Nio',serbian:'Devet',serbian_latin:'Devet',phonetic:'de-vet',emoji:'9️⃣'},
+    {swedish:'Tio',serbian:'Deset',serbian_latin:'Deset',phonetic:'de-set',emoji:'🔟'},
+    {swedish:'Tjugo',serbian:'Dvadeset',serbian_latin:'Dvadeset',phonetic:'dva-de-set',emoji:'2️⃣0️⃣'},
+    {swedish:'Hundra',serbian:'Sto',serbian_latin:'Sto',phonetic:'sto',emoji:'💯'},
+    {swedish:'Noll',serbian:'Nula',serbian_latin:'Nula',phonetic:'nu-la',emoji:'0️⃣'},
+    {swedish:'Elva',serbian:'Jedanaest',serbian_latin:'Jedanaest',phonetic:'ye-da-na-est',emoji:'🔢'},
+    {swedish:'Tolv',serbian:'Dvanaest',serbian_latin:'Dvanaest',phonetic:'dva-na-est',emoji:'🔢'},
+    {swedish:'Femton',serbian:'Petnaest',serbian_latin:'Petnaest',phonetic:'pet-na-est',emoji:'🔢'},
+    {swedish:'Tusen',serbian:'Hiljada',serbian_latin:'Hiljada',phonetic:'hil-ya-da',emoji:'🔢'},
+  ],
+  2:[
+    {swedish:'Röd',serbian:'Crvena',serbian_latin:'Crvena',phonetic:'cr-ve-na',emoji:'🔴'},
+    {swedish:'Blå',serbian:'Plava',serbian_latin:'Plava',phonetic:'pla-va',emoji:'🔵'},
+    {swedish:'Grön',serbian:'Zelena',serbian_latin:'Zelena',phonetic:'ze-le-na',emoji:'🟢'},
+    {swedish:'Gul',serbian:'Žuta',serbian_latin:'Žuta',phonetic:'žu-ta',emoji:'🟡'},
+    {swedish:'Svart',serbian:'Crna',serbian_latin:'Crna',phonetic:'cr-na',emoji:'⚫'},
+    {swedish:'Vit',serbian:'Bela',serbian_latin:'Bela',phonetic:'be-la',emoji:'⚪'},
+    {swedish:'Rosa',serbian:'Roze',serbian_latin:'Roze',phonetic:'ro-ze',emoji:'🌸'},
+    {swedish:'Lila',serbian:'Ljubičasta',serbian_latin:'Ljubičasta',phonetic:'lyu-bi-čas-ta',emoji:'💜'},
+    {swedish:'Orange',serbian:'Narandžasta',serbian_latin:'Narandžasta',phonetic:'na-ran-džas-ta',emoji:'🟠'},
+    {swedish:'Brun',serbian:'Smeđa',serbian_latin:'Smeđa',phonetic:'sme-đa',emoji:'🟤'},
+    {swedish:'Grå',serbian:'Siva',serbian_latin:'Siva',phonetic:'si-va',emoji:'🩶'},
+    {swedish:'Turkos',serbian:'Tirkizna',serbian_latin:'Tirkizna',phonetic:'tir-kiz-na',emoji:'🩵'},
+    {swedish:'Guld',serbian:'Zlatna',serbian_latin:'Zlatna',phonetic:'zlat-na',emoji:'🌟'},
+    {swedish:'Silver',serbian:'Srebrna',serbian_latin:'Srebrna',phonetic:'sreb-r-na',emoji:'⚪'},
+  ],
+  3:[
+    {swedish:'Hund',serbian:'Pas',serbian_latin:'Pas',phonetic:'pas',emoji:'🐶'},
+    {swedish:'Katt',serbian:'Mačka',serbian_latin:'Mačka',phonetic:'mač-ka',emoji:'🐱'},
+    {swedish:'Häst',serbian:'Konj',serbian_latin:'Konj',phonetic:'konj',emoji:'🐴'},
+    {swedish:'Fågel',serbian:'Ptica',serbian_latin:'Ptica',phonetic:'pti-ca',emoji:'🐦'},
+    {swedish:'Björn',serbian:'Medved',serbian_latin:'Medved',phonetic:'med-ved',emoji:'🐻'},
+    {swedish:'Varg',serbian:'Vuk',serbian_latin:'Vuk',phonetic:'vuk',emoji:'🐺'},
+    {swedish:'Ko',serbian:'Krava',serbian_latin:'Krava',phonetic:'kra-va',emoji:'🐄'},
+    {swedish:'Gris',serbian:'Svinja',serbian_latin:'Svinja',phonetic:'svi-nya',emoji:'🐷'},
+    {swedish:'Kanin',serbian:'Zec',serbian_latin:'Zec',phonetic:'zec',emoji:'🐰'},
+    {swedish:'Fisk',serbian:'Riba',serbian_latin:'Riba',phonetic:'ri-ba',emoji:'🐟'},
+    {swedish:'Lejon',serbian:'Lav',serbian_latin:'Lav',phonetic:'lav',emoji:'🦁'},
+    {swedish:'Elefant',serbian:'Slon',serbian_latin:'Slon',phonetic:'slon',emoji:'🐘'},
+    {swedish:'Apa',serbian:'Majmun',serbian_latin:'Majmun',phonetic:'may-mun',emoji:'🐒'},
+    {swedish:'Orm',serbian:'Zmija',serbian_latin:'Zmija',phonetic:'zmi-ya',emoji:'🐍'},
+    {swedish:'Fjäril',serbian:'Leptir',serbian_latin:'Leptir',phonetic:'lep-tir',emoji:'🦋'},
+  ],
+  4:[
+    {swedish:'Vatten',serbian:'Voda',serbian_latin:'Voda',phonetic:'vo-da',emoji:'💧'},
+    {swedish:'Bröd',serbian:'Hleb',serbian_latin:'Hleb',phonetic:'hleb',emoji:'🍞'},
+    {swedish:'Pizza',serbian:'Pica',serbian_latin:'Pica',phonetic:'pi-ca',emoji:'🍕'},
+    {swedish:'Kaffe',serbian:'Kafa',serbian_latin:'Kafa',phonetic:'ka-fa',emoji:'☕'},
+    {swedish:'Äpple',serbian:'Jabuka',serbian_latin:'Jabuka',phonetic:'ya-bu-ka',emoji:'🍎'},
+    {swedish:'Mjölk',serbian:'Mleko',serbian_latin:'Mleko',phonetic:'mle-ko',emoji:'🥛'},
+    {swedish:'Kött',serbian:'Meso',serbian_latin:'Meso',phonetic:'me-so',emoji:'🥩'},
+    {swedish:'Ägg',serbian:'Jaje',serbian_latin:'Jaje',phonetic:'ya-ye',emoji:'🥚'},
+    {swedish:'Ost',serbian:'Sir',serbian_latin:'Sir',phonetic:'sir',emoji:'🧀'},
+    {swedish:'Tomat',serbian:'Paradajz',serbian_latin:'Paradajz',phonetic:'pa-ra-dajz',emoji:'🍅'},
+    {swedish:'Potatis',serbian:'Krompir',serbian_latin:'Krompir',phonetic:'krom-pir',emoji:'🥔'},
+    {swedish:'Glass',serbian:'Sladoled',serbian_latin:'Sladoled',phonetic:'sla-do-led',emoji:'🍦'},
+    {swedish:'Tårta',serbian:'Torta',serbian_latin:'Torta',phonetic:'tor-ta',emoji:'🎂'},
+    {swedish:'Soppa',serbian:'Supa',serbian_latin:'Supa',phonetic:'su-pa',emoji:'🍲'},
+    {swedish:'Juice',serbian:'Sok',serbian_latin:'Sok',phonetic:'sok',emoji:'🧃'},
+    {swedish:'Te',serbian:'Čaj',serbian_latin:'Čaj',phonetic:'čaj',emoji:'🍵'},
+    {swedish:'Choklad',serbian:'Čokolada',serbian_latin:'Čokolada',phonetic:'čo-ko-la-da',emoji:'🍫'},
+  ],
+  5:[
+    {swedish:'Mamma',serbian:'Mama',serbian_latin:'Mama',phonetic:'ma-ma',emoji:'👩'},
+    {swedish:'Pappa',serbian:'Tata',serbian_latin:'Tata',phonetic:'ta-ta',emoji:'👨'},
+    {swedish:'Syster',serbian:'Sestra',serbian_latin:'Sestra',phonetic:'ses-tra',emoji:'👧'},
+    {swedish:'Bror',serbian:'Brat',serbian_latin:'Brat',phonetic:'brat',emoji:'👦'},
+    {swedish:'Farmor',serbian:'Baka',serbian_latin:'Baka',phonetic:'ba-ka',emoji:'👵'},
+    {swedish:'Farfar',serbian:'Deda',serbian_latin:'Deda',phonetic:'de-da',emoji:'👴'},
+    {swedish:'Son',serbian:'Sin',serbian_latin:'Sin',phonetic:'sin',emoji:'👦'},
+    {swedish:'Dotter',serbian:'Ćerka',serbian_latin:'Ćerka',phonetic:'ćer-ka',emoji:'👧'},
+    {swedish:'Farbror',serbian:'Ujak',serbian_latin:'Ujak',phonetic:'u-yak',emoji:'👨'},
+    {swedish:'Faster',serbian:'Tetka',serbian_latin:'Tetka',phonetic:'tet-ka',emoji:'👩'},
+    {swedish:'Kusin',serbian:'Rođak',serbian_latin:'Rođak',phonetic:'ro-đak',emoji:'🧑'},
+    {swedish:'Familj',serbian:'Porodica',serbian_latin:'Porodica',phonetic:'po-ro-di-ca',emoji:'👨‍👩‍👧'},
+    {swedish:'Baby',serbian:'Beba',serbian_latin:'Beba',phonetic:'be-ba',emoji:'👶'},
+    {swedish:'Morfar',serbian:'Deda',serbian_latin:'Deda',phonetic:'de-da',emoji:'👴'},
+    {swedish:'Mormor',serbian:'Baka',serbian_latin:'Baka',phonetic:'ba-ka',emoji:'👵'},
+  ],
+  6:[
+    {swedish:'Huvud',serbian:'Glava',serbian_latin:'Glava',phonetic:'gla-va',emoji:'🧠'},
+    {swedish:'Hand',serbian:'Ruka',serbian_latin:'Ruka',phonetic:'ru-ka',emoji:'✋'},
+    {swedish:'Fot',serbian:'Noga',serbian_latin:'Noga',phonetic:'no-ga',emoji:'🦶'},
+    {swedish:'Hjärta',serbian:'Srce',serbian_latin:'Srce',phonetic:'sr-ce',emoji:'❤️'},
+    {swedish:'Ögon',serbian:'Oči',serbian_latin:'Oči',phonetic:'o-či',emoji:'👁️'},
+    {swedish:'Näsa',serbian:'Nos',serbian_latin:'Nos',phonetic:'nos',emoji:'👃'},
+    {swedish:'Mun',serbian:'Usta',serbian_latin:'Usta',phonetic:'us-ta',emoji:'👄'},
+    {swedish:'Öra',serbian:'Uho',serbian_latin:'Uho',phonetic:'u-ho',emoji:'👂'},
+    {swedish:'Tand',serbian:'Zub',serbian_latin:'Zub',phonetic:'zub',emoji:'🦷'},
+    {swedish:'Hår',serbian:'Kosa',serbian_latin:'Kosa',phonetic:'ko-sa',emoji:'💇'},
+    {swedish:'Mage',serbian:'Stomak',serbian_latin:'Stomak',phonetic:'sto-mak',emoji:'🫃'},
+    {swedish:'Rygg',serbian:'Leđa',serbian_latin:'Leđa',phonetic:'le-đa',emoji:'🔙'},
+    {swedish:'Ben',serbian:'Noga',serbian_latin:'Noga',phonetic:'no-ga',emoji:'🦵'},
+    {swedish:'Finger',serbian:'Prst',serbian_latin:'Prst',phonetic:'prst',emoji:'☝️'},
+    {swedish:'Axel',serbian:'Rame',serbian_latin:'Rame',phonetic:'ra-me',emoji:'💪'},
+  ],
+  7:[
+    {swedish:'Tröja',serbian:'Majica',serbian_latin:'Majica',phonetic:'ma-yi-ca',emoji:'👕'},
+    {swedish:'Byxor',serbian:'Pantalone',serbian_latin:'Pantalone',phonetic:'pan-ta-lo-ne',emoji:'👖'},
+    {swedish:'Skor',serbian:'Cipele',serbian_latin:'Cipele',phonetic:'ci-pe-le',emoji:'👟'},
+    {swedish:'Klänning',serbian:'Haljina',serbian_latin:'Haljina',phonetic:'hal-yi-na',emoji:'👗'},
+    {swedish:'Jacka',serbian:'Jakna',serbian_latin:'Jakna',phonetic:'yak-na',emoji:'🧥'},
+    {swedish:'Strumpor',serbian:'Čarape',serbian_latin:'Čarape',phonetic:'ča-ra-pe',emoji:'🧦'},
+    {swedish:'Mössa',serbian:'Kapa',serbian_latin:'Kapa',phonetic:'ka-pa',emoji:'🧢'},
+    {swedish:'Kjol',serbian:'Suknja',serbian_latin:'Suknja',phonetic:'suk-nya',emoji:'👘'},
+    {swedish:'Glasögon',serbian:'Naočare',serbian_latin:'Naočare',phonetic:'na-o-ča-re',emoji:'👓'},
+    {swedish:'Halsduk',serbian:'Šal',serbian_latin:'Šal',phonetic:'šal',emoji:'🧣'},
+    {swedish:'Handväska',serbian:'Torbica',serbian_latin:'Torbica',phonetic:'tor-bi-ca',emoji:'👜'},
+    {swedish:'Klocka',serbian:'Sat',serbian_latin:'Sat',phonetic:'sat',emoji:'⌚'},
+    {swedish:'Vantar',serbian:'Rukavice',serbian_latin:'Rukavice',phonetic:'ru-ka-vi-ce',emoji:'🧤'},
+    {swedish:'Tröja/Huvtröja',serbian:'Duks',serbian_latin:'Duks',phonetic:'duks',emoji:'🥷'},
+  ],
+  8:[
+    {swedish:'Glad',serbian:'Srećan',serbian_latin:'Srećan',phonetic:'sre-ćan',emoji:'😊'},
+    {swedish:'Ledsen',serbian:'Tužan',serbian_latin:'Tužan',phonetic:'tu-žan',emoji:'😢'},
+    {swedish:'Arg',serbian:'Ljut',serbian_latin:'Ljut',phonetic:'lyut',emoji:'😠'},
+    {swedish:'Trött',serbian:'Umoran',serbian_latin:'Umoran',phonetic:'u-mo-ran',emoji:'😴'},
+    {swedish:'Rädd',serbian:'Uplašen',serbian_latin:'Uplašen',phonetic:'up-la-šen',emoji:'😨'},
+    {swedish:'Hungrig',serbian:'Gladan',serbian_latin:'Gladan',phonetic:'gla-dan',emoji:'🤤'},
+    {swedish:'Lycklig',serbian:'Sretan',serbian_latin:'Sretan',phonetic:'sre-tan',emoji:'🥰'},
+    {swedish:'Nervös',serbian:'Nervozan',serbian_latin:'Nervozan',phonetic:'ner-vo-zan',emoji:'😰'},
+    {swedish:'Förvånad',serbian:'Iznenađen',serbian_latin:'Iznenađen',phonetic:'iz-ne-na-đen',emoji:'😲'},
+    {swedish:'Stolt',serbian:'Ponosan',serbian_latin:'Ponosan',phonetic:'po-no-san',emoji:'😤'},
+    {swedish:'Kär',serbian:'Zaljubljen',serbian_latin:'Zaljubljen',phonetic:'za-lyub-lyen',emoji:'😍'},
+    {swedish:'Sjuk',serbian:'Bolestan',serbian_latin:'Bolestan',phonetic:'bo-les-tan',emoji:'🤒'},
+    {swedish:'Nyfiken',serbian:'Radoznao',serbian_latin:'Radoznao',phonetic:'ra-doz-nao',emoji:'🤔'},
+    {swedish:'Uttråkad',serbian:'Dosadan',serbian_latin:'Dosadan',phonetic:'do-sa-dan',emoji:'😑'},
+  ],
+  9:[
+    {swedish:'Kök',serbian:'Kuhinja',serbian_latin:'Kuhinja',phonetic:'ku-hi-nya',emoji:'🍳'},
+    {swedish:'Sovrum',serbian:'Spavaća soba',serbian_latin:'Spavaća soba',phonetic:'spa-va-ća so-ba',emoji:'🛏️'},
+    {swedish:'Badrum',serbian:'Kupatilo',serbian_latin:'Kupatilo',phonetic:'ku-pa-ti-lo',emoji:'🛁'},
+    {swedish:'Vardagsrum',serbian:'Dnevna soba',serbian_latin:'Dnevna soba',phonetic:'dnev-na so-ba',emoji:'🛋️'},
+    {swedish:'Bord',serbian:'Sto',serbian_latin:'Sto',phonetic:'sto',emoji:'🪑'},
+    {swedish:'Fönster',serbian:'Prozor',serbian_latin:'Prozor',phonetic:'pro-zor',emoji:'🪟'},
+    {swedish:'Dörr',serbian:'Vrata',serbian_latin:'Vrata',phonetic:'vra-ta',emoji:'🚪'},
+    {swedish:'Säng',serbian:'Krevet',serbian_latin:'Krevet',phonetic:'kre-vet',emoji:'🛏️'},
+    {swedish:'Lampa',serbian:'Lampa',serbian_latin:'Lampa',phonetic:'lam-pa',emoji:'💡'},
+    {swedish:'TV',serbian:'Televizor',serbian_latin:'Televizor',phonetic:'te-le-vi-zor',emoji:'📺'},
+    {swedish:'Stol',serbian:'Stolica',serbian_latin:'Stolica',phonetic:'sto-li-ca',emoji:'🪑'},
+    {swedish:'Spegel',serbian:'Ogledalo',serbian_latin:'Ogledalo',phonetic:'og-le-da-lo',emoji:'🪞'},
+    {swedish:'Hus',serbian:'Kuća',serbian_latin:'Kuća',phonetic:'ku-ća',emoji:'🏠'},
+    {swedish:'Trappa',serbian:'Stepenice',serbian_latin:'Stepenice',phonetic:'ste-pe-ni-ce',emoji:'🪜'},
+    {swedish:'Balkong',serbian:'Balkon',serbian_latin:'Balkon',phonetic:'bal-kon',emoji:'🏗️'},
+  ],
+  10:[
+    {swedish:'Huset',serbian:'Kuća',serbian_latin:'Kuća',phonetic:'ku-ća',emoji:'🏠'},
+    {swedish:'Skolan',serbian:'Škola',serbian_latin:'Škola',phonetic:'ško-la',emoji:'🏫'},
+    {swedish:'Parken',serbian:'Park',serbian_latin:'Park',phonetic:'park',emoji:'🌳'},
+    {swedish:'Sjukhuset',serbian:'Bolnica',serbian_latin:'Bolnica',phonetic:'bol-ni-ca',emoji:'🏥'},
+    {swedish:'Till höger',serbian:'Desno',serbian_latin:'Desno',phonetic:'des-no',emoji:'➡️'},
+    {swedish:'Till vänster',serbian:'Levo',serbian_latin:'Levo',phonetic:'le-vo',emoji:'⬅️'},
+    {swedish:'Rakt fram',serbian:'Pravo',serbian_latin:'Pravo',phonetic:'pra-vo',emoji:'⬆️'},
+    {swedish:'Affären',serbian:'Prodavnica',serbian_latin:'Prodavnica',phonetic:'pro-dav-ni-ca',emoji:'🏪'},
+    {swedish:'Restaurangen',serbian:'Restoran',serbian_latin:'Restoran',phonetic:'res-to-ran',emoji:'🍽️'},
+    {swedish:'Banken',serbian:'Banka',serbian_latin:'Banka',phonetic:'ban-ka',emoji:'🏦'},
+    {swedish:'Biblioteket',serbian:'Biblioteka',serbian_latin:'Biblioteka',phonetic:'bib-li-o-te-ka',emoji:'📚'},
+    {swedish:'Torget',serbian:'Trg',serbian_latin:'Trg',phonetic:'trg',emoji:'🏛️'},
+    {swedish:'Bron',serbian:'Most',serbian_latin:'Most',phonetic:'most',emoji:'🌉'},
+    {swedish:'Gatan',serbian:'Ulica',serbian_latin:'Ulica',phonetic:'u-li-ca',emoji:'🛣️'},
+    {swedish:'Nära',serbian:'Blizu',serbian_latin:'Blizu',phonetic:'bli-zu',emoji:'📍'},
+    {swedish:'Långt bort',serbian:'Daleko',serbian_latin:'Daleko',phonetic:'da-le-ko',emoji:'🗺️'},
+  ],
+  11:[
+    {swedish:'Buss',serbian:'Autobus',serbian_latin:'Autobus',phonetic:'a-u-to-bus',emoji:'🚌'},
+    {swedish:'Tåg',serbian:'Voz',serbian_latin:'Voz',phonetic:'voz',emoji:'🚂'},
+    {swedish:'Bil',serbian:'Auto',serbian_latin:'Auto',phonetic:'a-u-to',emoji:'🚗'},
+    {swedish:'Flygplan',serbian:'Avion',serbian_latin:'Avion',phonetic:'a-vi-on',emoji:'✈️'},
+    {swedish:'Cykel',serbian:'Bicikl',serbian_latin:'Bicikl',phonetic:'bi-cikl',emoji:'🚲'},
+    {swedish:'Tunnelbana',serbian:'Metro',serbian_latin:'Metro',phonetic:'met-ro',emoji:'🚇'},
+    {swedish:'Taxi',serbian:'Taksi',serbian_latin:'Taksi',phonetic:'tak-si',emoji:'🚕'},
+    {swedish:'Båt',serbian:'Brod',serbian_latin:'Brod',phonetic:'brod',emoji:'⛵'},
+    {swedish:'Motorcykel',serbian:'Motor',serbian_latin:'Motor',phonetic:'mo-tor',emoji:'🏍️'},
+    {swedish:'Spårvagn',serbian:'Tramvaj',serbian_latin:'Tramvaj',phonetic:'tram-vay',emoji:'🚊'},
+    {swedish:'Hållplats',serbian:'Stanica',serbian_latin:'Stanica',phonetic:'sta-ni-ca',emoji:'🚏'},
+    {swedish:'Flygplats',serbian:'Aerodrom',serbian_latin:'Aerodrom',phonetic:'a-e-ro-drom',emoji:'🛫'},
+    {swedish:'Bilbälte',serbian:'Pojas',serbian_latin:'Pojas',phonetic:'po-yas',emoji:'🔒'},
+    {swedish:'Karta',serbian:'Mapa',serbian_latin:'Mapa',phonetic:'ma-pa',emoji:'🗺️'},
+  ],
+  12:[
+    {swedish:'Idag',serbian:'Danas',serbian_latin:'Danas',phonetic:'da-nas',emoji:'📅'},
+    {swedish:'Imorgon',serbian:'Sutra',serbian_latin:'Sutra',phonetic:'sut-ra',emoji:'🌅'},
+    {swedish:'Igår',serbian:'Juče',serbian_latin:'Juče',phonetic:'yu-če',emoji:'⏪'},
+    {swedish:'Måndag',serbian:'Ponedeljak',serbian_latin:'Ponedeljak',phonetic:'po-ne-del-yak',emoji:'📆'},
+    {swedish:'Tisdag',serbian:'Utorak',serbian_latin:'Utorak',phonetic:'u-to-rak',emoji:'📆'},
+    {swedish:'Onsdag',serbian:'Sreda',serbian_latin:'Sreda',phonetic:'sre-da',emoji:'📆'},
+    {swedish:'Torsdag',serbian:'Četvrtak',serbian_latin:'Četvrtak',phonetic:'čet-vr-tak',emoji:'📆'},
+    {swedish:'Fredag',serbian:'Petak',serbian_latin:'Petak',phonetic:'pe-tak',emoji:'📆'},
+    {swedish:'Lördag',serbian:'Subota',serbian_latin:'Subota',phonetic:'su-bo-ta',emoji:'📆'},
+    {swedish:'Söndag',serbian:'Nedelja',serbian_latin:'Nedelja',phonetic:'ne-del-ya',emoji:'📆'},
+    {swedish:'Januari',serbian:'Januar',serbian_latin:'Januar',phonetic:'ya-nu-ar',emoji:'❄️'},
+    {swedish:'Juli',serbian:'Jul',serbian_latin:'Jul',phonetic:'yul',emoji:'☀️'},
+    {swedish:'Klockan ett',serbian:'Jedan sat',serbian_latin:'Jedan sat',phonetic:'ye-dan sat',emoji:'🕐'},
+    {swedish:'Klockan fem',serbian:'Pet sati',serbian_latin:'Pet sati',phonetic:'pet sa-ti',emoji:'🕔'},
+    {swedish:'Midnatt',serbian:'Ponoć',serbian_latin:'Ponoć',phonetic:'po-noć',emoji:'🌑'},
+    {swedish:'Morgon',serbian:'Jutro',serbian_latin:'Jutro',phonetic:'yut-ro',emoji:'🌄'},
+    {swedish:'Kväll',serbian:'Veče',serbian_latin:'Veče',phonetic:'ve-če',emoji:'🌆'},
+  ],
+  13:[
+    {swedish:'Matematik',serbian:'Matematika',serbian_latin:'Matematika',phonetic:'ma-te-ma-ti-ka',emoji:'➕'},
+    {swedish:'Bok',serbian:'Knjiga',serbian_latin:'Knjiga',phonetic:'knji-ga',emoji:'📚'},
+    {swedish:'Läraren',serbian:'Učitelj',serbian_latin:'Učitelj',phonetic:'u-či-telj',emoji:'👩‍🏫'},
+    {swedish:'Läxan',serbian:'Domaći zadatak',serbian_latin:'Domaći zadatak',phonetic:'do-ma-ći za-da-tak',emoji:'📝'},
+    {swedish:'Klassen',serbian:'Razred',serbian_latin:'Razred',phonetic:'raz-red',emoji:'🏫'},
+    {swedish:'Pennan',serbian:'Olovka',serbian_latin:'Olovka',phonetic:'o-lov-ka',emoji:'✏️'},
+    {swedish:'Väskan',serbian:'Torba',serbian_latin:'Torba',phonetic:'tor-ba',emoji:'🎒'},
+    {swedish:'Tavlan',serbian:'Tabla',serbian_latin:'Tabla',phonetic:'tab-la',emoji:'🖊️'},
+    {swedish:'Pappret',serbian:'Papir',serbian_latin:'Papir',phonetic:'pa-pir',emoji:'📄'},
+    {swedish:'Suddgummit',serbian:'Gumica',serbian_latin:'Gumica',phonetic:'gu-mi-ca',emoji:'🩹'},
+    {swedish:'Linjalen',serbian:'Lenjir',serbian_latin:'Lenjir',phonetic:'len-yir',emoji:'📏'},
+    {swedish:'Datorn',serbian:'Kompjuter',serbian_latin:'Kompjuter',phonetic:'komp-yu-ter',emoji:'💻'},
+    {swedish:'Rasten',serbian:'Odmor',serbian_latin:'Odmor',phonetic:'od-mor',emoji:'⏰'},
+    {swedish:'Provet',serbian:'Test',serbian_latin:'Test',phonetic:'test',emoji:'📋'},
+    {swedish:'Biologi',serbian:'Biologija',serbian_latin:'Biologija',phonetic:'bi-o-lo-gi-ya',emoji:'🌿'},
+  ],
+  14:[
+    {swedish:'Sol',serbian:'Sunce',serbian_latin:'Sunce',phonetic:'sun-ce',emoji:'☀️'},
+    {swedish:'Regn',serbian:'Kiša',serbian_latin:'Kiša',phonetic:'ki-ša',emoji:'🌧️'},
+    {swedish:'Snö',serbian:'Sneg',serbian_latin:'Sneg',phonetic:'sneg',emoji:'❄️'},
+    {swedish:'Havet',serbian:'More',serbian_latin:'More',phonetic:'mo-re',emoji:'🌊'},
+    {swedish:'Blomma',serbian:'Cvet',serbian_latin:'Cvet',phonetic:'cvet',emoji:'🌸'},
+    {swedish:'Träd',serbian:'Drvo',serbian_latin:'Drvo',phonetic:'dr-vo',emoji:'🌳'},
+    {swedish:'Berg',serbian:'Planina',serbian_latin:'Planina',phonetic:'pla-ni-na',emoji:'⛰️'},
+    {swedish:'Flod',serbian:'Reka',serbian_latin:'Reka',phonetic:'re-ka',emoji:'🏞️'},
+    {swedish:'Skog',serbian:'Šuma',serbian_latin:'Šuma',phonetic:'šu-ma',emoji:'🌲'},
+    {swedish:'Moln',serbian:'Oblak',serbian_latin:'Oblak',phonetic:'ob-lak',emoji:'☁️'},
+    {swedish:'Vind',serbian:'Vetar',serbian_latin:'Vetar',phonetic:'ve-tar',emoji:'💨'},
+    {swedish:'Åska',serbian:'Grmljavina',serbian_latin:'Grmljavina',phonetic:'grm-lya-vi-na',emoji:'⛈️'},
+    {swedish:'Regnbåge',serbian:'Duga',serbian_latin:'Duga',phonetic:'du-ga',emoji:'🌈'},
+    {swedish:'Månen',serbian:'Mesec',serbian_latin:'Mesec',phonetic:'me-sec',emoji:'🌙'},
+    {swedish:'Stjärna',serbian:'Zvezda',serbian_latin:'Zvezda',phonetic:'zvez-da',emoji:'⭐'},
+  ],
+  15:[
+    {swedish:'Pengar',serbian:'Novac',serbian_latin:'Novac',phonetic:'no-vac',emoji:'💰'},
+    {swedish:'Affären',serbian:'Prodavnica',serbian_latin:'Prodavnica',phonetic:'pro-dav-ni-ca',emoji:'🏪'},
+    {swedish:'Billig',serbian:'Jeftin',serbian_latin:'Jeftin',phonetic:'yef-tin',emoji:'💲'},
+    {swedish:'Dyr',serbian:'Skup',serbian_latin:'Skup',phonetic:'skup',emoji:'💎'},
+    {swedish:'Kvitto',serbian:'Račun',serbian_latin:'Račun',phonetic:'ra-čun',emoji:'🧾'},
+    {swedish:'Kassa',serbian:'Kasa',serbian_latin:'Kasa',phonetic:'ka-sa',emoji:'🏧'},
+    {swedish:'Rabatt',serbian:'Popust',serbian_latin:'Popust',phonetic:'po-pust',emoji:'🏷️'},
+    {swedish:'Storlek',serbian:'Veličina',serbian_latin:'Veličina',phonetic:'ve-li-či-na',emoji:'📏'},
+    {swedish:'Köpa',serbian:'Kupiti',serbian_latin:'Kupiti',phonetic:'ku-pi-ti',emoji:'🛒'},
+    {swedish:'Sälja',serbian:'Prodati',serbian_latin:'Prodati',phonetic:'pro-da-ti',emoji:'💸'},
+    {swedish:'Betala',serbian:'Platiti',serbian_latin:'Platiti',phonetic:'pla-ti-ti',emoji:'💳'},
+    {swedish:'Kort',serbian:'Kartica',serbian_latin:'Kartica',phonetic:'kar-ti-ca',emoji:'💳'},
+    {swedish:'Kontant',serbian:'Gotovina',serbian_latin:'Gotovina',phonetic:'go-to-vi-na',emoji:'💵'},
+    {swedish:'Marknad',serbian:'Pijaca',serbian_latin:'Pijaca',phonetic:'pi-ya-ca',emoji:'🛍️'},
+  ],
+  16:[
+    {swedish:'Fotboll',serbian:'Fudbal',serbian_latin:'Fudbal',phonetic:'fud-bal',emoji:'⚽'},
+    {swedish:'Simning',serbian:'Plivanje',serbian_latin:'Plivanje',phonetic:'pli-va-nye',emoji:'🏊'},
+    {swedish:'Musik',serbian:'Muzika',serbian_latin:'Muzika',phonetic:'mu-zi-ka',emoji:'🎵'},
+    {swedish:'Dans',serbian:'Ples',serbian_latin:'Ples',phonetic:'ples',emoji:'💃'},
+    {swedish:'Spel',serbian:'Igra',serbian_latin:'Igra',phonetic:'ig-ra',emoji:'🎮'},
+    {swedish:'Tennis',serbian:'Tenis',serbian_latin:'Tenis',phonetic:'te-nis',emoji:'🎾'},
+    {swedish:'Basket',serbian:'Košarka',serbian_latin:'Košarka',phonetic:'ko-šar-ka',emoji:'🏀'},
+    {swedish:'Löpning',serbian:'Trčanje',serbian_latin:'Trčanje',phonetic:'tr-ča-nye',emoji:'🏃'},
+    {swedish:'Gym',serbian:'Teretana',serbian_latin:'Teretana',phonetic:'te-re-ta-na',emoji:'🏋️'},
+    {swedish:'Film',serbian:'Film',serbian_latin:'Film',phonetic:'film',emoji:'🎬'},
+    {swedish:'Läsa',serbian:'Čitati',serbian_latin:'Čitati',phonetic:'či-ta-ti',emoji:'📖'},
+    {swedish:'Målning',serbian:'Slikanje',serbian_latin:'Slikanje',phonetic:'sli-ka-nye',emoji:'🎨'},
+    {swedish:'Gitarr',serbian:'Gitara',serbian_latin:'Gitara',phonetic:'gi-ta-ra',emoji:'🎸'},
+    {swedish:'Yoga',serbian:'Joga',serbian_latin:'Joga',phonetic:'yo-ga',emoji:'🧘'},
+  ],
+  17:[
+    {swedish:'Jag vill',serbian:'Hoću',serbian_latin:'Hoću',phonetic:'ho-ću',emoji:'🙋'},
+    {swedish:'Jag kan',serbian:'Mogu',serbian_latin:'Mogu',phonetic:'mo-gu',emoji:'💪'},
+    {swedish:'Förstå',serbian:'Razumeti',serbian_latin:'Razumeti',phonetic:'ra-zu-me-ti',emoji:'🧠'},
+    {swedish:'Hjälp!',serbian:'Pomoć!',serbian_latin:'Pomoć!',phonetic:'po-moć',emoji:'🆘'},
+    {swedish:'Lycka till',serbian:'Srećno',serbian_latin:'Srećno',phonetic:'sreć-no',emoji:'🍀'},
+    {swedish:'Jag vet inte',serbian:'Ne znam',serbian_latin:'Ne znam',phonetic:'ne znam',emoji:'🤷'},
+    {swedish:'Vänta',serbian:'Čekaj',serbian_latin:'Čekaj',phonetic:'če-kay',emoji:'✋'},
+    {swedish:'Kom!',serbian:'Hajde!',serbian_latin:'Hajde!',phonetic:'hay-de',emoji:'👈'},
+    {swedish:'Titta!',serbian:'Gledaj!',serbian_latin:'Gledaj!',phonetic:'gle-day',emoji:'👀'},
+    {swedish:'Lyssna',serbian:'Slušaj',serbian_latin:'Slušaj',phonetic:'slu-šay',emoji:'👂'},
+    {swedish:'Prata',serbian:'Pričaj',serbian_latin:'Pričaj',phonetic:'pri-čay',emoji:'💬'},
+    {swedish:'Ät!',serbian:'Jedi!',serbian_latin:'Jedi!',phonetic:'ye-di',emoji:'🍽️'},
+    {swedish:'Sov gott',serbian:'Laku noć',serbian_latin:'Laku noć',phonetic:'la-ku noć',emoji:'😴'},
+    {swedish:'Grattis!',serbian:'Čestitam!',serbian_latin:'Čestitam!',phonetic:'čes-ti-tam',emoji:'🎉'},
+    {swedish:'Bra gjort!',serbian:'Bravo!',serbian_latin:'Bravo!',phonetic:'bra-vo',emoji:'👏'},
+  ],
+  18:[
+    {swedish:'Sjuk',serbian:'Bolestan',serbian_latin:'Bolestan',phonetic:'bo-les-tan',emoji:'🤒'},
+    {swedish:'Läkare',serbian:'Doktor',serbian_latin:'Doktor',phonetic:'dok-tor',emoji:'👨‍⚕️'},
+    {swedish:'Medicin',serbian:'Lek',serbian_latin:'Lek',phonetic:'lek',emoji:'💊'},
+    {swedish:'Ont i magen',serbian:'Bol u stomaku',serbian_latin:'Bol u stomaku',phonetic:'bol u sto-ma-ku',emoji:'🤢'},
+    {swedish:'Frisk',serbian:'Zdrav',serbian_latin:'Zdrav',phonetic:'zdrav',emoji:'💚'},
+    {swedish:'Feber',serbian:'Temperatura',serbian_latin:'Temperatura',phonetic:'tem-pe-ra-tu-ra',emoji:'🌡️'},
+    {swedish:'Hosta',serbian:'Kašalj',serbian_latin:'Kašalj',phonetic:'ka-šalj',emoji:'😷'},
+    {swedish:'Ont i halsen',serbian:'Boli me grlo',serbian_latin:'Boli me grlo',phonetic:'bo-li me gr-lo',emoji:'🤧'},
+    {swedish:'Sjukhus',serbian:'Bolnica',serbian_latin:'Bolnica',phonetic:'bol-ni-ca',emoji:'🏥'},
+    {swedish:'Apotek',serbian:'Apoteka',serbian_latin:'Apoteka',phonetic:'a-po-te-ka',emoji:'💊'},
+    {swedish:'Allergisk',serbian:'Alergičan',serbian_latin:'Alergičan',phonetic:'a-ler-gi-čan',emoji:'🤧'},
+    {swedish:'Sår',serbian:'Rana',serbian_latin:'Rana',phonetic:'ra-na',emoji:'🩹'},
+    {swedish:'Plåster',serbian:'Flaster',serbian_latin:'Flaster',phonetic:'flas-ter',emoji:'🩹'},
+    {swedish:'Vila',serbian:'Odmor',serbian_latin:'Odmor',phonetic:'od-mor',emoji:'🛏️'},
+  ],
+  19:[
+    {swedish:'Koka',serbian:'Kuvati',serbian_latin:'Kuvati',phonetic:'ku-va-ti',emoji:'🍳'},
+    {swedish:'Blanda',serbian:'Mešati',serbian_latin:'Mešati',phonetic:'me-ša-ti',emoji:'🥣'},
+    {swedish:'Salt',serbian:'So',serbian_latin:'So',phonetic:'so',emoji:'🧂'},
+    {swedish:'Socker',serbian:'Šećer',serbian_latin:'Šećer',phonetic:'še-ćer',emoji:'🍬'},
+    {swedish:'Recept',serbian:'Recept',serbian_latin:'Recept',phonetic:'re-cept',emoji:'📋'},
+    {swedish:'Ugn',serbian:'Rerna',serbian_latin:'Rerna',phonetic:'rer-na',emoji:'♨️'},
+    {swedish:'Gryta',serbian:'Lonac',serbian_latin:'Lonac',phonetic:'lo-nac',emoji:'🍲'},
+    {swedish:'Stek',serbian:'Peći',serbian_latin:'Peći',phonetic:'pe-ći',emoji:'🥩'},
+    {swedish:'Skiva',serbian:'Seći',serbian_latin:'Seći',phonetic:'se-ći',emoji:'🔪'},
+    {swedish:'Krydda',serbian:'Začin',serbian_latin:'Začin',phonetic:'za-čin',emoji:'🌶️'},
+    {swedish:'Olja',serbian:'Ulje',serbian_latin:'Ulje',phonetic:'ul-ye',emoji:'🫙'},
+    {swedish:'Mjöl',serbian:'Brašno',serbian_latin:'Brašno',phonetic:'braš-no',emoji:'🌾'},
+    {swedish:'Smör',serbian:'Puter',serbian_latin:'Puter',phonetic:'pu-ter',emoji:'🧈'},
+    {swedish:'Frukost',serbian:'Doručak',serbian_latin:'Doručak',phonetic:'do-ru-čak',emoji:'🍳'},
+  ],
+  20:[
+    {swedish:'Hotell',serbian:'Hotel',serbian_latin:'Hotel',phonetic:'ho-tel',emoji:'🏨'},
+    {swedish:'Pass',serbian:'Pasoš',serbian_latin:'Pasoš',phonetic:'pa-soš',emoji:'🛂'},
+    {swedish:'Strand',serbian:'Plaža',serbian_latin:'Plaža',phonetic:'pla-ža',emoji:'🏖️'},
+    {swedish:'Karta',serbian:'Mapa',serbian_latin:'Mapa',phonetic:'ma-pa',emoji:'🗺️'},
+    {swedish:'Semester',serbian:'Odmor',serbian_latin:'Odmor',phonetic:'od-mor',emoji:'🌴'},
+    {swedish:'Biljett',serbian:'Karta',serbian_latin:'Karta',phonetic:'kar-ta',emoji:'🎫'},
+    {swedish:'Bagage',serbian:'Prtljag',serbian_latin:'Prtljag',phonetic:'prt-lyag',emoji:'🧳'},
+    {swedish:'Incheckning',serbian:'Prijava',serbian_latin:'Prijava',phonetic:'pri-ya-va',emoji:'✈️'},
+    {swedish:'Rum',serbian:'Soba',serbian_latin:'Soba',phonetic:'so-ba',emoji:'🛏️'},
+    {swedish:'Turistinfo',serbian:'Turistički info',serbian_latin:'Turistički info',phonetic:'tu-ris-tič-ki in-fo',emoji:'ℹ️'},
+    {swedish:'Utsikt',serbian:'Pogled',serbian_latin:'Pogled',phonetic:'po-gled',emoji:'🏔️'},
+    {swedish:'Minnessak',serbian:'Suvenir',serbian_latin:'Suvenir',phonetic:'su-ve-nir',emoji:'🎁'},
+    {swedish:'Valuta',serbian:'Valuta',serbian_latin:'Valuta',phonetic:'va-lu-ta',emoji:'💱'},
+    {swedish:'Semester',serbian:'Godišnji odmor',serbian_latin:'Godišnji odmor',phonetic:'go-diš-nyi od-mor',emoji:'🌴'},
+  ],
+  21:[
+    {swedish:'Kompis',serbian:'Drug',serbian_latin:'Drug',phonetic:'drug',emoji:'👫'},
+    {swedish:'Fika',serbian:'Kafa i razgovor',serbian_latin:'Kafa i razgovor',phonetic:'ka-fa i raz-go-vor',emoji:'☕'},
+    {swedish:'Party',serbian:'Žurka',serbian_latin:'Žurka',phonetic:'žur-ka',emoji:'🎉'},
+    {swedish:'Skratta',serbian:'Smejati se',serbian_latin:'Smejati se',phonetic:'sme-ya-ti se',emoji:'😂'},
+    {swedish:'Sakna',serbian:'Nedostajati',serbian_latin:'Nedostajati',phonetic:'ne-dos-ta-ya-ti',emoji:'🥺'},
+    {swedish:'Kram',serbian:'Zagrljaj',serbian_latin:'Zagrljaj',phonetic:'za-grl-yay',emoji:'🤗'},
+    {swedish:'Puss',serbian:'Poljubac',serbian_latin:'Poljubac',phonetic:'pol-yu-bac',emoji:'😘'},
+    {swedish:'Snäll',serbian:'Ljubazan',serbian_latin:'Ljubazan',phonetic:'lyu-ba-zan',emoji:'😇'},
+    {swedish:'Rolig',serbian:'Smešan',serbian_latin:'Smešan',phonetic:'sme-šan',emoji:'😄'},
+    {swedish:'Granne',serbian:'Komšija',serbian_latin:'Komšija',phonetic:'kom-ši-ya',emoji:'🏘️'},
+    {swedish:'Bjuda in',serbian:'Pozvati',serbian_latin:'Pozvati',phonetic:'poz-va-ti',emoji:'📨'},
+    {swedish:'Träffas',serbian:'Sresti se',serbian_latin:'Sresti se',phonetic:'sres-ti se',emoji:'🤝'},
+    {swedish:'Chattar',serbian:'Čatuje',serbian_latin:'Čatuje',phonetic:'ča-tu-ye',emoji:'💬'},
+    {swedish:'Födelsedag',serbian:'Rođendan',serbian_latin:'Rođendan',phonetic:'ro-đen-dan',emoji:'🎂'},
+  ],
+  22:[
+    {swedish:'Sång',serbian:'Pesma',serbian_latin:'Pesma',phonetic:'pes-ma',emoji:'🎤'},
+    {swedish:'Slava',serbian:'Slava',serbian_latin:'Slava',phonetic:'sla-va',emoji:'🕯️'},
+    {swedish:'Turbofolk',serbian:'Turbofolk',serbian_latin:'Turbofolk',phonetic:'tur-bo-folk',emoji:'🎶'},
+    {swedish:'Tradition',serbian:'Tradicija',serbian_latin:'Tradicija',phonetic:'tra-di-ci-ya',emoji:'🎭'},
+    {swedish:'Rakija',serbian:'Rakija',serbian_latin:'Rakija',phonetic:'ra-ki-ya',emoji:'🥃'},
+    {swedish:'Jul',serbian:'Božić',serbian_latin:'Božić',phonetic:'bo-žić',emoji:'🎄'},
+    {swedish:'Påsk',serbian:'Uskrs',serbian_latin:'Uskrs',phonetic:'us-krs',emoji:'🐣'},
+    {swedish:'Folkdans',serbian:'Kolo',serbian_latin:'Kolo',phonetic:'ko-lo',emoji:'💃'},
+    {swedish:'Serbisk mat',serbian:'Srpska hrana',serbian_latin:'Srpska hrana',phonetic:'srp-ska hra-na',emoji:'🍽️'},
+    {swedish:'Ćevapi',serbian:'Ćevapi',serbian_latin:'Ćevapi',phonetic:'će-va-pi',emoji:'🌭'},
+    {swedish:'Belgrad',serbian:'Beograd',serbian_latin:'Beograd',phonetic:'be-o-grad',emoji:'🏙️'},
+    {swedish:'Serbien',serbian:'Srbija',serbian_latin:'Srbija',phonetic:'sr-bi-ya',emoji:'🇷🇸'},
+    {swedish:'Kyrka',serbian:'Crkva',serbian_latin:'Crkva',phonetic:'crk-va',emoji:'⛪'},
+    {swedish:'Historia',serbian:'Istorija',serbian_latin:'Istorija',phonetic:'is-to-ri-ya',emoji:'📜'},
+  ],
+  23:[
+    {swedish:'Jag',serbian:'Ja',serbian_latin:'Ja',phonetic:'ya',emoji:'🙋'},
+    {swedish:'Du',serbian:'Ti',serbian_latin:'Ti',phonetic:'ti',emoji:'👉'},
+    {swedish:'Han/Hon',serbian:'On/Ona',serbian_latin:'On/Ona',phonetic:'on/o-na',emoji:'👤'},
+    {swedish:'Vi',serbian:'Mi',serbian_latin:'Mi',phonetic:'mi',emoji:'👥'},
+    {swedish:'De',serbian:'Oni',serbian_latin:'Oni',phonetic:'o-ni',emoji:'👥'},
+    {swedish:'Är (jag är)',serbian:'Jesam',serbian_latin:'Jesam',phonetic:'ye-sam',emoji:'✅'},
+    {swedish:'Inte',serbian:'Nije',serbian_latin:'Nije',phonetic:'ni-ye',emoji:'❌'},
+    {swedish:'Och',serbian:'I',serbian_latin:'I',phonetic:'i',emoji:'➕'},
+    {swedish:'Men',serbian:'Ali',serbian_latin:'Ali',phonetic:'a-li',emoji:'↔️'},
+    {swedish:'För att',serbian:'Zato što',serbian_latin:'Zato što',phonetic:'za-to što',emoji:'💭'},
+    {swedish:'Stor',serbian:'Veliki',serbian_latin:'Veliki',phonetic:'ve-li-ki',emoji:'🔴'},
+    {swedish:'Liten',serbian:'Mali',serbian_latin:'Mali',phonetic:'ma-li',emoji:'🔵'},
+    {swedish:'Bra',serbian:'Dobar',serbian_latin:'Dobar',phonetic:'do-bar',emoji:'👍'},
+    {swedish:'Dålig',serbian:'Loš',serbian_latin:'Loš',phonetic:'loš',emoji:'👎'},
+    {swedish:'Ny',serbian:'Nov',serbian_latin:'Nov',phonetic:'nov',emoji:'✨'},
+  ],
+  24:[
+    {swedish:'Nyheter',serbian:'Vesti',serbian_latin:'Vesti',phonetic:'ves-ti',emoji:'📰'},
+    {swedish:'Sport',serbian:'Sport',serbian_latin:'Sport',phonetic:'sport',emoji:'🏆'},
+    {swedish:'Väder',serbian:'Vreme',serbian_latin:'Vreme',phonetic:'vre-me',emoji:'🌤️'},
+    {swedish:'Ekonomi',serbian:'Ekonomija',serbian_latin:'Ekonomija',phonetic:'e-ko-no-mi-ya',emoji:'💹'},
+    {swedish:'Val',serbian:'Izbori',serbian_latin:'Izbori',phonetic:'iz-bo-ri',emoji:'🗳️'},
+    {swedish:'Miljö',serbian:'Životna sredina',serbian_latin:'Životna sredina',phonetic:'ži-vot-na sre-di-na',emoji:'🌍'},
+    {swedish:'Teknik',serbian:'Tehnologija',serbian_latin:'Tehnologija',phonetic:'teh-no-lo-gi-ya',emoji:'💻'},
+    {swedish:'Hälsa',serbian:'Zdravlje',serbian_latin:'Zdravlje',phonetic:'zdrav-lye',emoji:'❤️'},
+    {swedish:'Utbildning',serbian:'Obrazovanje',serbian_latin:'Obrazovanje',phonetic:'ob-ra-zo-va-nye',emoji:'🎓'},
+    {swedish:'Kultur',serbian:'Kultura',serbian_latin:'Kultura',phonetic:'kul-tu-ra',emoji:'🎭'},
+    {swedish:'Vetenskap',serbian:'Nauka',serbian_latin:'Nauka',phonetic:'na-u-ka',emoji:'🔬'},
+    {swedish:'Musik',serbian:'Muzika',serbian_latin:'Muzika',phonetic:'mu-zi-ka',emoji:'🎵'},
+    {swedish:'Film',serbian:'Film',serbian_latin:'Film',phonetic:'film',emoji:'🎬'},
+    {swedish:'Resor',serbian:'Putovanja',serbian_latin:'Putovanja',phonetic:'pu-to-va-nya',emoji:'✈️'},
+  ],
+  100:[
+    {swedish:'Jag älskar dig',serbian:'Volim te',serbian_latin:'Volim te',phonetic:'vo-lim te',emoji:'❤️'},
+    {swedish:'Du är söt',serbian:'Sladak si',serbian_latin:'Sladak si',phonetic:'sla-dak si',emoji:'🥰'},
+    {swedish:'Kramar',serbian:'Zagrljaji',serbian_latin:'Zagrljaji',phonetic:'za-grl-ya-yi',emoji:'🤗'},
+    {swedish:'Saknar dig',serbian:'Nedostaješ mi',serbian_latin:'Nedostaješ mi',phonetic:'ne-dos-ta-yeš mi',emoji:'🥺'},
+    {swedish:'Pussar',serbian:'Poljupci',serbian_latin:'Poljupci',phonetic:'pol-yup-ci',emoji:'😘'},
+    {swedish:'Du är vacker',serbian:'Lepa si',serbian_latin:'Lepa si',phonetic:'le-pa si',emoji:'✨'},
+    {swedish:'Jag tänker på dig',serbian:'Mislim na tebe',serbian_latin:'Mislim na tebe',phonetic:'mis-lim na te-be',emoji:'💭'},
+    {swedish:'För alltid',serbian:'Zauvek',serbian_latin:'Zauvek',phonetic:'za-u-vek',emoji:'♾️'},
+    {swedish:'Min hjärtevän',serbian:'Moje srce',serbian_latin:'Moje srce',phonetic:'mo-ye sr-ce',emoji:'💝'},
+    {swedish:'Jag är lycklig',serbian:'Sretan sam',serbian_latin:'Sretan sam',phonetic:'sre-tan sam',emoji:'😊'},
+  ],
+  101:[
+    {swedish:'Coolt',serbian:'Kul',serbian_latin:'Kul',phonetic:'kul',emoji:'😎'},
+    {swedish:'Toppen',serbian:'Super',serbian_latin:'Super',phonetic:'su-per',emoji:'👌'},
+    {swedish:'Inga problem',serbian:'Nema problema',serbian_latin:'Nema problema',phonetic:'ne-ma pro-ble-ma',emoji:'🤙'},
+    {swedish:'Schysst',serbian:'Frajer',serbian_latin:'Frajer',phonetic:'fra-yer',emoji:'😏'},
+    {swedish:'Seriöst',serbian:'Ozbiljno',serbian_latin:'Ozbiljno',phonetic:'oz-bilj-no',emoji:'🤨'},
+    {swedish:'Vilken tur',serbian:'Srećom',serbian_latin:'Srećom',phonetic:'sre-ćom',emoji:'🍀'},
+    {swedish:'Lägg av',serbian:'Prestani',serbian_latin:'Prestani',phonetic:'pres-ta-ni',emoji:'🙄'},
+    {swedish:'Galet',serbian:'Ludo',serbian_latin:'Ludo',phonetic:'lu-do',emoji:'🤪'},
+    {swedish:'Schysst kompis',serbian:'Dobar drug',serbian_latin:'Dobar drug',phonetic:'do-bar drug',emoji:'🤝'},
+    {swedish:'Kör igång',serbian:'Hajde',serbian_latin:'Hajde',phonetic:'hay-de',emoji:'🚀'},
+  ],
+  102:[
+    {swedish:'Jul',serbian:'Božić',serbian_latin:'Božić',phonetic:'bo-žić',emoji:'🎄'},
+    {swedish:'Slava',serbian:'Slava',serbian_latin:'Slava',phonetic:'sla-va',emoji:'🕯️'},
+    {swedish:'Beograd',serbian:'Beograd',serbian_latin:'Beograd',phonetic:'be-o-grad',emoji:'🏙️'},
+    {swedish:'Folkdans',serbian:'Kolo',serbian_latin:'Kolo',phonetic:'ko-lo',emoji:'💃'},
+    {swedish:'Rakija',serbian:'Rakija',serbian_latin:'Rakija',phonetic:'ra-ki-ya',emoji:'🥃'},
+    {swedish:'Ćevapi',serbian:'Ćevapi',serbian_latin:'Ćevapi',phonetic:'će-va-pi',emoji:'🌭'},
+    {swedish:'Ortodox',serbian:'Pravoslavlje',serbian_latin:'Pravoslavlje',phonetic:'pra-vos-lav-lye',emoji:'✝️'},
+    {swedish:'Serbisk flagga',serbian:'Srpska zastava',serbian_latin:'Srpska zastava',phonetic:'srp-ska zas-ta-va',emoji:'🇷🇸'},
+    {swedish:'NovSAD',serbian:'Novi Sad',serbian_latin:'Novi Sad',phonetic:'no-vi sad',emoji:'🏘️'},
+    {swedish:'Dunaj',serbian:'Dunav',serbian_latin:'Dunav',phonetic:'du-nav',emoji:'🌊'},
+  ],
+  103:[
+    {swedish:'Välkommen till Serbien',serbian:'Dobrodošli u Srbiju',serbian_latin:'Dobrodošli u Srbiju',phonetic:'do-bro-doš-li u sr-bi-yu',emoji:'🇷🇸'},
+    {swedish:'Jag pratar serbiska',serbian:'Govorim srpski',serbian_latin:'Govorim srpski',phonetic:'go-vo-rim srp-ski',emoji:'🎓'},
+    {swedish:'Förstår du?',serbian:'Razumeš li?',serbian_latin:'Razumeš li?',phonetic:'ra-zu-meš li',emoji:'🤔'},
+    {swedish:'Bra gjort',serbian:'Bravo',serbian_latin:'Bravo',phonetic:'bra-vo',emoji:'👏'},
+    {swedish:'Tills nästa gång',serbian:'Do sledećeg puta',serbian_latin:'Do sledećeg puta',phonetic:'do sle-de-ćeg pu-ta',emoji:'👋'},
+    {swedish:'Jag förstår',serbian:'Razumem',serbian_latin:'Razumem',phonetic:'ra-zu-mem',emoji:'✅'},
+    {swedish:'Kan du upprepa?',serbian:'Možeš li ponoviti?',serbian_latin:'Možeš li ponoviti?',phonetic:'mo-žeš li po-no-vi-ti',emoji:'🔄'},
+    {swedish:'Prata långsammare',serbian:'Govori sporije',serbian_latin:'Govori sporije',phonetic:'go-vo-ri spo-ri-ye',emoji:'🐢'},
+    {swedish:'Jag lär mig serbiska',serbian:'Učim srpski',serbian_latin:'Učim srpski',phonetic:'u-čim srp-ski',emoji:'📚'},
+    {swedish:'Det var svårt',serbian:'To je teško',serbian_latin:'To je teško',phonetic:'to ye teš-ko',emoji:'😅'},
+  ],
 };
 
-// ═══════════════════════════════════════════════════
-// WEEKLY CHALLENGES
-// ═══════════════════════════════════════════════════
+// Shuffle and pick N words from wordbank
+function getWords(chapterId, count) {
+  const bank = WORDBANK[chapterId] || WORDBANK[0];
+  const shuffled = [...bank].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, Math.min(count, shuffled.length));
+}
+
+// Keep FALLBACK as alias for backwards compatibility
+const FALLBACK = WORDBANK;
 const WEEKLY_CHALLENGES = [
   {phrase:'Volim te, mama!',     sv:'Jag älskar dig, mamma!',    target:'din mamma',  emoji:'❤️', icon:'👩'},
   {phrase:'Kako si, bako?',      sv:'Hur mår du, mormor?',        target:'din mormor', emoji:'💛', icon:'👵'},
@@ -687,17 +1134,9 @@ function startChapter(id, bonus) {
 
 async function loadFlashWords() {
   $('app').innerHTML=wrapLesson(`<div class="loading-msg">Laddar ord...</div>`,0);
-  const ch = chInfo();
-  const prompt=`Ge mig exakt ${FLASH_COUNT} nybörjarvänliga serbiska ord/fraser på temat "${ch.topic}". Skript: ${gs.script==='latin'?'Latinsk (srpska latinica)':'Kyrillisk (ćirilica)'}. Svara BARA med JSON array utan backticks: [{"swedish":"...","serbian":"...","serbian_latin":"...","phonetic":"...","emoji":"..."}] Phonetic = enkel svensk uttalsskrift t.ex. "zdra-vo", "do-bro yut-ro".`;
-  try {
-    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_API_KEY,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,messages:[{role:'user',content:prompt}]})});
-    if(!r.ok)throw new Error();
-    const d=await r.json();
-    const arr=JSON.parse(d.content[0].text.replace(/```json|```/g,'').trim());
-    if(!Array.isArray(arr)||!arr.length)throw new Error();
-    gs.flashWords=arr;
-  } catch(e) { gs.flashWords=FALLBACK[cc()]||FALLBACK[0]; }
-  gs.flashIndex=0; renderFlash();
+  gs.flashWords = getWords(cc(), FLASH_COUNT);
+  gs.flashIndex = 0;
+  renderFlash();
 }
 
 function renderFlash() {
@@ -775,24 +1214,7 @@ async function loadGame() {
   gs.answered=false;
   const cur=gs.isExam?gs.gameIndex:(FLASH_COUNT+gs.gameIndex);
   $('app').innerHTML=wrapLesson(`<div class="loading-msg">Nästa övning...</div>`,Math.round((cur/(FLASH_COUNT+GAME_COUNT))*100));
-  const type=getGameType();
-  const wl=gs.flashWords.map(w=>`${w.swedish}=${gs.script==='latin'?(w.serbian_latin||w.serbian):w.serbian}`).join(',');
-  const name=firstName();
-  const typeSchemas = {
-    match: ',"pairs":[{"swedish":"...","serbian":"..."},{"swedish":"...","serbian":"..."},{"swedish":"...","serbian":"..."},{"swedish":"...","serbian":"..."}]',
-    trueFalse: ',"shown_swedish":"...","shown_serbian":"...","phonetic":"...","is_correct":true',
-    multipleChoice: ',"serbian":"...","phonetic":"...","correct_swedish":"...","options":["...","...","...","..."],"emoji":"..."',
-    reverseWrite: ',"serbian":"...","phonetic":"...","correct_swedish":"...","emoji":"..."',
-    write: ',"serbian_latin":"...","phonetic":"..."',
-  };
-  const extra = typeSchemas[type] || typeSchemas.write;
-  const prompt=`Serbisk övning typ "${type}" baserat på: ${wl}. Skript: ${gs.script==='latin'?'Latinsk':'Kyrillisk'}. ${gs.isExam?'PROV.':'Nybörjare, lektion '+(gs.currentLesson+1)+'/3.'} ${name&&name!=='du'?`Eleven heter ${name}, använd namnet i feedback_correct.`:''} phonetic = enkel uttalsskrift t.ex. "zdra-vo". Svara BARA med JSON utan backticks: {"type":"${type}","swedish":"...","serbian":"...","emoji":"...","hint":"...","feedback_correct":"...","feedback_wrong":"..."${extra},"xp":${gs.isExam?30:20}}`;
-  try {
-    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_API_KEY,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,messages:[{role:'user',content:prompt}]})});
-    if(!r.ok)throw new Error();
-    const d=await r.json();
-    gs.q=JSON.parse(d.content[0].text.replace(/```json|```/g,'').trim());
-  } catch(e) { gs.q=buildFallback(); }
+  gs.q = buildFallback();
   renderGame();
 }
 
@@ -1063,7 +1485,7 @@ function startDailyGame(){
   const availableChapters = gs.chaptersDone.length > 0 ? gs.chaptersDone : [0];
   gs.currentChapter=availableChapters[Math.floor(Math.random()*availableChapters.length)];
   gs.isBonus=false;
-  gs.flashWords=FALLBACK[gs.currentChapter]||FALLBACK[0];
+  gs.flashWords=getWords(gs.currentChapter, FLASH_COUNT);
   gs.gameIndex=0;gs.gameCorrect=0;gs.sessionXp=0;gs.answered=false;
   loadDailyQ();
 }
@@ -1071,16 +1493,7 @@ function startDailyGame(){
 async function loadDailyQ(){
   if(gs.gameIndex>=5){endDaily();return;}
   gs.answered=false;
-  $('app').innerHTML=`<div>${renderNav('daily')}<div class="loading-msg">Laddar fråga ${gs.gameIndex+1}/5...</div></div>`;
-  const types=['match','trueFalse','write','match','trueFalse'],type=types[gs.gameIndex%types.length];
-  const wl=gs.flashWords.map(w=>`${w.swedish}=${w.serbian_latin||w.serbian}`).join(',');
-  const name=firstName();
-  const prompt=`Serbisk övning typ "${type}" baserat på: ${wl}. Latinsk skrift. ${name&&name!=='du'?`Eleven heter ${name}.`:''} Svara BARA med JSON utan backticks: {"type":"${type}","swedish":"...","serbian":"...","serbian_latin":"...","emoji":"...","hint":"...","feedback_correct":"...","feedback_wrong":"..."${type==='match'?',"pairs":[{"swedish":"...","serbian":"..."},{"swedish":"...","serbian":"..."},{"swedish":"...","serbian":"..."},{"swedish":"...","serbian":"..."}]':type==='trueFalse'?',"shown_swedish":"...","shown_serbian":"...","is_correct":true':''},"xp":40}`;
-  try{
-    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_API_KEY,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:700,messages:[{role:'user',content:prompt}]})});
-    if(!r.ok)throw new Error();
-    const d=await r.json(); gs.q=JSON.parse(d.content[0].text.replace(/```json|```/g,'').trim());
-  }catch(e){gs.q=buildFallback();gs.q.xp=40;}
+  gs.q=buildFallback();gs.q.xp=40;
   renderDailyQ();
 }
 
@@ -1327,7 +1740,7 @@ function showPasswordScreen() {
 function checkPassword() {
   const val=($('pwInput')||{}).value||'';
   if(val===APP_PASSWORD) {
-    sessionStorage.setItem('serbiska_auth','1');
+    localStorage.setItem('serbiska_auth','1');
     startApp();
   } else {
     const err=$('pw-err');
@@ -1344,7 +1757,7 @@ function startApp() {
 // ═══════════════════════════════════════════════════
 // START
 // ═══════════════════════════════════════════════════
-if(sessionStorage.getItem('serbiska_auth')==='1'){
+if(localStorage.getItem('serbiska_auth')==='1'){
   startApp();
 } else {
   showPasswordScreen();
