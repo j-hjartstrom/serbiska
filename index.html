@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Serbiska">
+<title>Lär dig serbiska! 🇷🇸</title>
+<script>
+  // ============================================================
+  // KLISTRA IN DINA API-NYCKLAR HÄR
+  // ============================================================
+  const ELEVENLABS_API_KEY = "DIN_ELEVENLABS_NYCKEL_HÄR";
+  const ELEVENLABS_VOICE_ID = "pNInz6obpgDQGcFmaJgB";
+  const ANTHROPIC_API_KEY  = "DIN_ANTHROPIC_NYCKEL_HÄR";
+  // ============================================================
+  // Öka DATA_VERSION när du lägger till kapitel → progress bevaras!
+  const DATA_VERSION = 3;
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f0eeff;--white:#fff;--text:#2d2640;--text2:#7c6f9a;--text3:#b8afd4;--radius:18px;--radius-sm:12px;--shadow:0 2px 14px rgba(100,80,180,.10);}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html{background:var(--bg);}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+#app{max-width:430px;margin:0 auto;padding:16px 16px 88px;}
+/* NAV */
+.nav{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;background:#fff;border-radius:16px;padding:4px;margin-bottom:16px;box-shadow:var(--shadow);}
+.nav-btn{padding:8px 2px;border:none;border-radius:12px;font-family:'Nunito',sans-serif;font-size:10px;font-weight:800;cursor:pointer;color:var(--text3);background:transparent;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:2px;}
+.nav-btn .ni{font-size:18px;}
+.nav-btn.active{background:var(--bg);color:var(--text);}
+/* TOPBAR */
+.topbar{display:flex;align-items:center;gap:8px;margin-bottom:16px;}
+.prog-wrap{flex:1;background:#e5e0f8;border-radius:99px;height:10px;overflow:hidden;}
+.prog-bar{height:100%;border-radius:99px;transition:width .5s cubic-bezier(.4,0,.2,1);}
+.pill{font-size:12px;font-weight:800;padding:5px 10px;border-radius:99px;white-space:nowrap;}
+.pill-xp{background:#fef3c7;color:#92400e;}
+.pill-streak{background:#fee2e2;color:#991b1b;}
+/* ONBOARDING */
+.onboard-wrap{min-height:80vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem 1rem;}
+.onboard-flag{font-size:72px;margin-bottom:16px;}
+.onboard-title{font-size:26px;font-weight:900;color:var(--text);margin-bottom:8px;}
+.onboard-sub{font-size:15px;color:var(--text2);font-weight:700;margin-bottom:28px;line-height:1.6;}
+.name-input{width:100%;max-width:300px;padding:16px 20px;font-family:'Nunito',sans-serif;font-size:18px;font-weight:800;border-radius:var(--radius);border:2.5px solid #ddd6fe;background:#fff;color:var(--text);outline:none;text-align:center;margin-bottom:14px;transition:border-color .15s;}
+.name-input:focus{border-color:#a78bfa;}
+.name-input::placeholder{color:var(--text3);font-weight:600;}
+.start-btn{background:#a78bfa;color:#fff;border:none;border-radius:var(--radius);padding:16px 40px;font-family:'Nunito',sans-serif;font-size:17px;font-weight:900;cursor:pointer;box-shadow:0 4px 0 #7c3aed;transition:transform .12s;}
+.start-btn:active{transform:translateY(2px);box-shadow:0 1px 0 #7c3aed;}
+/* PROFILE */
+.profile-card{background:#fff;border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);margin-bottom:12px;display:flex;align-items:center;gap:12px;}
+.profile-avatar{width:46px;height:46px;border-radius:50%;background:#ede9fe;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:#5b21b6;flex-shrink:0;}
+.profile-name{font-size:16px;font-weight:900;color:var(--text);}
+.profile-sub{font-size:11px;color:var(--text2);font-weight:700;margin-top:2px;}
+/* LEVEL SECTIONS */
+.level-header{display:flex;align-items:center;gap:10px;margin:14px 0 10px;padding:10px 14px;border-radius:var(--radius-sm);}
+.level-dot{width:12px;height:12px;border-radius:50%;}
+.level-title{font-size:13px;font-weight:900;}
+.level-sub{font-size:11px;opacity:.7;margin-left:auto;font-weight:700;}
+.lv-beginner{background:#f0fdf4;color:#065f46;}
+.lv-beginner .level-dot{background:#34d399;}
+.lv-medium{background:#fffbeb;color:#92400e;}
+.lv-medium .level-dot{background:#fbbf24;}
+.lv-advanced{background:#fff1f2;color:#9f1239;}
+.lv-advanced .level-dot{background:#fb7185;}
+.lv-bonus{background:#faf5ff;color:#6b21a8;}
+.lv-bonus .level-dot{background:#c084fc;}
+/* CHAPTERS */
+.ch-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px;}
+.ch-card{border-radius:14px;padding:12px;cursor:pointer;transition:transform .16s;position:relative;overflow:hidden;min-height:88px;display:flex;flex-direction:column;justify-content:flex-end;box-shadow:var(--shadow);border:2px solid transparent;}
+.ch-card:not(.locked):active{transform:scale(.96);}
+.ch-card:not(.locked):hover{transform:translateY(-2px);}
+.ch-card.locked{opacity:.32;cursor:not-allowed;}
+.ch-card.done{border-color:currentColor;}
+.ch-bg-emoji{position:absolute;top:4px;right:8px;font-size:32px;opacity:.18;}
+.ch-status{position:absolute;top:8px;left:10px;font-size:14px;}
+.ch-name{font-size:13px;font-weight:900;position:relative;}
+.ch-meta{font-size:10px;opacity:.6;margin-top:2px;position:relative;font-weight:700;}
+/* Chapter color classes */
+.cc0{background:#ede9fe;color:#5b21b6;}.cc1{background:#dbeafe;color:#1e40af;}.cc2{background:#d1fae5;color:#065f46;}
+.cc3{background:#fce7f3;color:#9d174d;}.cc4{background:#e0f2fe;color:#0c4a6e;}.cc5{background:#ffedd5;color:#9a3412;}
+.cc6{background:#fef9c3;color:#854d0e;}.cc7{background:#fae8ff;color:#6b21a8;}.cc8{background:#dcfce7;color:#14532d;}
+.cc9{background:#f1f5f9;color:#334155;}.cc10{background:#fff7ed;color:#9a3412;}.cc11{background:#ecfdf5;color:#065f46;}
+.cc12{background:#eff6ff;color:#1e40af;}.cc13{background:#fdf4ff;color:#701a75;}.cc14{background:#f0fdf4;color:#14532d;}
+.cc15{background:#fff1f2;color:#9f1239;}.cc16{background:#fefce8;color:#854d0e;}.cc17{background:#f0f9ff;color:#0c4a6e;}
+.cc18{background:#fdf2f8;color:#831843;}.cc19{background:#f5f3ff;color:#4c1d95;}.cc20{background:#fff8f1;color:#7c2d12;}
+.cc21{background:#fef2f2;color:#991b1b;}.cc22{background:#f0fdf4;color:#052e16;}.cc23{background:#fafaf9;color:#1c1917;}
+.cc24{background:#fffbeb;color:#78350f;}
+/* Bonus chapter special style */
+.ch-card.bonus-locked{opacity:.25;cursor:not-allowed;border:2px dashed currentColor;}
+.ch-card.bonus-unlocked{border:2.5px solid #c084fc;box-shadow:0 0 0 3px rgba(192,132,252,.15);}
+/* DAILY */
+.daily-card{background:#fff;border-radius:var(--radius);padding:14px;margin-bottom:12px;display:flex;align-items:center;gap:12px;cursor:pointer;box-shadow:var(--shadow);border:2px solid #fde68a;transition:transform .15s;}
+.daily-card:hover{transform:scale(1.01);}
+.daily-icon{font-size:28px;}
+.daily-title{font-size:13px;font-weight:900;color:#92400e;}
+.daily-sub{font-size:11px;color:var(--text2);margin-top:2px;font-weight:600;}
+.daily-badge{margin-left:auto;background:#fef3c7;color:#92400e;font-size:11px;font-weight:900;padding:4px 10px;border-radius:99px;white-space:nowrap;flex-shrink:0;}
+/* WEEKLY CHALLENGE */
+.weekly-card{background:linear-gradient(135deg,#667eea,#764ba2);border-radius:var(--radius);padding:16px;margin-bottom:12px;cursor:pointer;box-shadow:0 4px 16px rgba(102,126,234,.35);transition:transform .15s;}
+.weekly-card:hover{transform:translateY(-2px);}
+.weekly-card.done-card{background:linear-gradient(135deg,#11998e,#38ef7d);cursor:default;}
+.weekly-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.weekly-label{font-size:10px;font-weight:900;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:.08em;}
+.weekly-badge{background:rgba(255,255,255,.2);color:#fff;font-size:10px;font-weight:900;padding:3px 10px;border-radius:99px;}
+.weekly-phrase{font-size:22px;font-weight:900;color:#fff;margin-bottom:4px;line-height:1.2;}
+.weekly-sv{font-size:13px;color:rgba(255,255,255,.85);font-weight:700;margin-bottom:10px;}
+.weekly-to{display:flex;align-items:center;gap:8px;}
+.weekly-avatar{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:16px;}
+.weekly-person{font-size:12px;font-weight:800;color:rgba(255,255,255,.9);}
+.weekly-hint{font-size:11px;color:rgba(255,255,255,.65);margin-top:2px;}
+/* LESSON */
+.lesson-wrap{border-radius:var(--radius);padding:16px;}
+.back-btn{background:rgba(255,255,255,.85);border:1.5px solid rgba(0,0,0,.08);border-radius:99px;padding:7px 16px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:var(--text2);cursor:pointer;margin-bottom:12px;display:inline-flex;align-items:center;gap:5px;transition:background .15s;}
+.back-btn:hover{background:#fff;color:var(--text);}
+.lesson-meta{font-size:12px;font-weight:800;color:var(--text2);margin-bottom:12px;opacity:.8;}
+/* FLASH */
+.flash-card{background:#fff;border-radius:20px;padding:26px 20px;text-align:center;margin-bottom:16px;box-shadow:var(--shadow);}
+.flash-emoji{font-size:64px;display:block;margin-bottom:12px;}
+.flash-sr{font-size:28px;font-weight:900;color:var(--text);margin-bottom:6px;line-height:1.2;}
+.flash-sv{font-size:15px;color:var(--text2);margin-bottom:16px;font-weight:700;}
+/* LISTEN */
+.listen-btn{background:var(--bg);border:1.5px solid #ddd6fe;border-radius:99px;padding:8px 18px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:var(--text2);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s;}
+.listen-btn:hover{background:#ede9fe;border-color:#a78bfa;color:var(--text);}
+.listen-btn.loading{opacity:.6;cursor:wait;}
+.listen-btn svg{width:15px;height:15px;}
+/* BUTTONS */
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
+.action-btn{padding:14px;border:none;border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-size:14px;font-weight:900;cursor:pointer;transition:transform .12s,box-shadow .12s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.action-btn:active{transform:translateY(2px)!important;box-shadow:0 1px 0 rgba(0,0,0,.1)!important;}
+.action-btn:hover{transform:translateY(-2px);}
+.btn-skip{background:#f1f0f9;color:var(--text2);box-shadow:0 4px 0 #d8d3f0;}
+.btn-green{background:#34d399;color:#052e16;box-shadow:0 4px 0 #10b981;}
+.btn-orange{background:#fb923c;color:#fff;box-shadow:0 4px 0 #ea7c26;}
+.btn-ghost{background:rgba(255,255,255,.7);color:var(--text2);border:1.5px solid #e5e0f8;box-shadow:none;}
+/* GAME */
+.game-card{background:#fff;border-radius:20px;padding:18px;box-shadow:var(--shadow);}
+.game-tag{display:inline-block;font-size:11px;font-weight:900;padding:4px 10px;border-radius:99px;background:var(--bg);color:var(--text2);margin-bottom:10px;}
+.exam-tag{background:#ffedd5;color:#9a3412;}
+.daily-tag{background:#fef3c7;color:#92400e;}
+.weekly-tag{background:#ede9fe;color:#5b21b6;}
+.game-q{font-size:17px;font-weight:900;color:var(--text);margin-bottom:4px;line-height:1.3;}
+.game-hint{font-size:13px;color:var(--text2);margin-bottom:14px;font-weight:700;}
+/* MATCH */
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.match-item{background:var(--bg);border:2px solid #e5e0f8;border-radius:var(--radius-sm);padding:12px 8px;cursor:pointer;font-size:13px;font-weight:800;color:var(--text);text-align:center;min-height:50px;display:flex;align-items:center;justify-content:center;transition:all .15s;line-height:1.3;}
+.match-item:hover{background:#ede9fe;border-color:#a78bfa;}
+.match-item.selected{border-color:#7c3aed;background:#ede9fe;color:#5b21b6;}
+.match-item.matched{border-color:#10b981;background:#d1fae5;color:#065f46;cursor:default;}
+.match-item.wrong-fl{border-color:#f87171;background:#fee2e2;}
+/* TF */
+.tf-word{font-size:24px;font-weight:900;color:var(--text);text-align:center;margin:10px 0 4px;}
+.tf-sv{font-size:14px;color:var(--text2);text-align:center;margin-bottom:18px;font-weight:700;}
+.tf-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.tf-btn{padding:15px;border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-size:14px;font-weight:900;cursor:pointer;border:2px solid transparent;transition:all .15s;}
+.tf-btn:active{transform:scale(.97);}
+.tf-btn:disabled{cursor:default;}
+.tf-sant{background:#d1fae5;color:#065f46;border-color:#6ee7b7;box-shadow:0 4px 0 #a7f3d0;}
+.tf-sant:hover{background:#a7f3d0;}
+.tf-falskt{background:#fee2e2;color:#991b1b;border-color:#fca5a5;box-shadow:0 4px 0 #fecaca;}
+.tf-falskt:hover{background:#fecaca;}
+.tf-btn.correct{background:#10b981;color:#fff;border-color:#059669;box-shadow:0 4px 0 #059669;}
+.tf-btn.wrong{background:#ef4444;color:#fff;border-color:#dc2626;box-shadow:0 4px 0 #dc2626;}
+.mc-btn{background:var(--bg);border:2px solid #e5e0f8;border-radius:var(--radius-sm);padding:13px 8px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;color:var(--text);text-align:center;transition:all .15s;}
+.mc-btn:hover{background:#ede9fe;border-color:#a78bfa;}
+.mc-btn:disabled{cursor:default;}
+/* WRITE */
+.write-input{width:100%;padding:14px 16px;font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;border-radius:var(--radius-sm);border:2px solid #e5e0f8;background:var(--bg);color:var(--text);margin-bottom:10px;outline:none;transition:border-color .15s;}
+.write-input::placeholder{color:var(--text3);font-weight:600;}
+.write-input:focus{border-color:#a78bfa;background:#fff;}
+.write-input.correct{border-color:#10b981;background:#d1fae5;color:#065f46;}
+.write-input.wrong{border-color:#f87171;background:#fee2e2;color:#991b1b;}
+/* FEEDBACK */
+.feedback{padding:13px 16px;border-radius:var(--radius-sm);margin-top:12px;font-size:13px;font-weight:700;line-height:1.6;}
+.feedback.good{background:#d1fae5;color:#065f46;border-left:4px solid #10b981;}
+.feedback.bad{background:#fee2e2;color:#991b1b;border-left:4px solid #f87171;}
+.xp-tag{display:inline-block;margin-top:5px;font-size:12px;background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:99px;font-weight:900;}
+/* RESULT */
+.result-wrap{text-align:center;padding:1.5rem 1rem;}
+.result-big{font-size:60px;margin-bottom:10px;}
+.result-title{font-size:21px;font-weight:900;color:var(--text);margin-bottom:6px;}
+.result-sub{font-size:13px;color:var(--text2);font-weight:700;margin-bottom:18px;}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px;}
+.stat-box{background:var(--bg);border-radius:var(--radius-sm);padding:12px;}
+.stat-val{font-size:20px;font-weight:900;color:var(--text);}
+.stat-lbl{font-size:10px;color:var(--text3);font-weight:800;margin-top:2px;}
+.result-banner{border-radius:var(--radius-sm);padding:12px 16px;font-size:13px;font-weight:800;margin-bottom:16px;}
+.result-banner.good{background:#d1fae5;color:#065f46;}
+.result-banner.bad{background:#fee2e2;color:#991b1b;}
+/* DICT */
+.dict-card{background:#fff;border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:12px;}
+.dict-input-wrap{position:relative;margin-bottom:10px;}
+.dict-input{width:100%;padding:14px 50px 14px 16px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;border-radius:var(--radius-sm);border:2px solid #e5e0f8;background:var(--bg);color:var(--text);outline:none;transition:border-color .15s;}
+.dict-input:focus{border-color:#a78bfa;background:#fff;}
+.dict-input::placeholder{color:var(--text3);font-weight:600;}
+.dict-search-btn{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:#ede9fe;border:none;border-radius:10px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.dict-result{background:#fff;border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);margin-bottom:8px;}
+.dict-word{font-size:20px;font-weight:900;color:var(--text);margin-bottom:6px;}
+.dict-pill{display:inline-block;font-size:12px;font-weight:800;padding:3px 10px;border-radius:99px;margin-right:5px;margin-bottom:6px;}
+.dict-pill.lat{background:#ede9fe;color:#5b21b6;}
+.dict-pill.cyr{background:#fce7f3;color:#9d174d;}
+/* ACH */
+.ach-header{background:#fff;border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);margin-bottom:12px;display:flex;align-items:center;gap:12px;}
+.ach-prog-wrap{flex:1;background:var(--bg);border-radius:99px;height:8px;overflow:hidden;}
+.ach-prog{height:100%;background:#fbbf24;border-radius:99px;transition:width .5s;}
+.ach-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.ach-card{background:#fff;border-radius:var(--radius);padding:12px;text-align:center;box-shadow:var(--shadow);border:2px solid transparent;}
+.ach-card.unlocked{border-color:#fbbf24;background:#fffbeb;}
+.ach-card.ach-locked{filter:grayscale(1);opacity:.35;}
+.ach-emoji{font-size:28px;margin-bottom:6px;display:block;}
+.ach-name{font-size:12px;font-weight:900;color:var(--text);margin-bottom:2px;}
+.ach-desc{font-size:10px;color:var(--text3);font-weight:700;line-height:1.4;}
+.ach-done-tag{font-size:9px;font-weight:900;color:#92400e;background:#fef3c7;padding:2px 8px;border-radius:99px;display:inline-block;margin-top:4px;}
+/* WEEKLY MANAGE */
+.person-chip{display:inline-flex;align-items:center;gap:6px;background:#fff;border:2px solid #e5e0f8;border-radius:99px;padding:6px 12px;margin:4px;font-size:12px;font-weight:800;color:var(--text);cursor:pointer;transition:all .15s;}
+.person-chip:hover{border-color:#a78bfa;background:#ede9fe;}
+.person-chip.active{background:#ede9fe;border-color:#7c3aed;color:#5b21b6;}
+.person-chip .del{color:#f87171;font-size:14px;margin-left:4px;}
+/* BONUS UNLOCK MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:10000;animation:fadein .2s ease;}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.modal-box{background:#fff;border-radius:24px;padding:28px 24px;text-align:center;max-width:320px;margin:16px;box-shadow:0 20px 60px rgba(0,0,0,.2);}
+.modal-emoji{font-size:56px;margin-bottom:12px;}
+.modal-title{font-size:20px;font-weight:900;color:var(--text);margin-bottom:8px;}
+.modal-sub{font-size:13px;color:var(--text2);font-weight:700;line-height:1.6;margin-bottom:20px;}
+/* ANIMS */
+.xp-pop{position:fixed;font-family:'Nunito',sans-serif;font-size:20px;font-weight:900;color:#f59e0b;pointer-events:none;animation:floatup .9s ease forwards;z-index:9999;text-shadow:0 2px 8px rgba(0,0,0,.15);}
+@keyframes floatup{0%{opacity:1;transform:translateY(0) scale(1)}60%{opacity:1;transform:translateY(-40px) scale(1.1)}100%{opacity:0;transform:translateY(-70px) scale(.9)}}
+.pop{animation:pop .3s cubic-bezier(.175,.885,.32,1.275);}
+@keyframes pop{0%{transform:scale(1)}55%{transform:scale(1.06)}100%{transform:scale(1)}}
+.shake{animation:shake .35s ease;}
+@keyframes shake{0%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}100%{transform:translateX(0)}}
+.slide-in{animation:slidein .22s ease;}
+@keyframes slidein{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
+.script-row{display:flex;gap:6px;margin-bottom:12px;}
+.script-btn{flex:1;padding:8px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;border-radius:99px;border:2px solid #e5e0f8;background:#fff;color:var(--text2);cursor:pointer;transition:all .15s;}
+.script-btn.active{background:#ede9fe;color:#5b21b6;border-color:#c4b5fd;}
+.loading-msg{text-align:center;padding:3rem;color:var(--text3);font-size:14px;font-weight:800;}
+.toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:#fff;border:2px solid #fbbf24;border-radius:14px;padding:12px 18px;display:flex;align-items:center;gap:10px;z-index:9999;font-family:'Nunito',sans-serif;box-shadow:0 8px 32px rgba(0,0,0,.12);min-width:240px;animation:slidein .3s ease;}
+.section-title{font-size:10px;font-weight:900;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ═══════════════════════════════════════════════════
+// CHAPTER DEFINITIONS – 25 main + 4 bonus
+// Level: 0=beginner, 1=medium, 2=advanced, 3=bonus
+// ═══════════════════════════════════════════════════
+const CHAPTERS = [
+  // 🟢 NYBÖRJARE (0-9)
+  {id:0,  name:'Hälsningar',    emoji:'👋', topic:'grundläggande hälsningar, hej och adjö', level:0},
+  {id:1,  name:'Siffror & tal', emoji:'🔢', topic:'siffror 1-20 och grundläggande räkning', level:0},
+  {id:2,  name:'Färger',        emoji:'🎨', topic:'grundläggande färger', level:0},
+  {id:3,  name:'Djur',          emoji:'🐾', topic:'vanliga husdjur och djur', level:0},
+  {id:4,  name:'Mat & dryck',   emoji:'🍕', topic:'mat, dryck och måltider', level:0},
+  {id:5,  name:'Familj',        emoji:'👨‍👩‍👧', topic:'familjemedlemmar och relationer', level:0},
+  {id:6,  name:'Kroppen',       emoji:'🫀', topic:'kroppsdelar', level:0},
+  {id:7,  name:'Kläder',        emoji:'👗', topic:'kläder och accessoarer', level:0},
+  {id:8,  name:'Känslor',       emoji:'😊', topic:'känslor och sinnesstämningar', level:0},
+  {id:9,  name:'Hemmet',        emoji:'🏠', topic:'rum och föremål i hemmet', level:0},
+  // 🟡 MELLANNIVÅ (10-17)
+  {id:10, name:'Platser',       emoji:'📍', topic:'platser i staden och riktningar', level:1},
+  {id:11, name:'Transport',     emoji:'🚌', topic:'transportmedel och resor', level:1},
+  {id:12, name:'Tid & datum',   emoji:'🕐', topic:'klockan, dagar, månader och årstider', level:1},
+  {id:13, name:'Skolan',        emoji:'🏫', topic:'skolämnen, saker i skolan och skollivet', level:1},
+  {id:14, name:'Natur & väder', emoji:'🌤️', topic:'väder, natur och miljö', level:1},
+  {id:15, name:'Shopping',      emoji:'🛍️', topic:'shopping, priser och handel', level:1},
+  {id:16, name:'Sport & hobby', emoji:'⚽', topic:'sport, fritid och intressen', level:1},
+  {id:17, name:'Verb & fraser', emoji:'💬', topic:'vanliga verb och vardagsfraser', level:1},
+  // 🔴 AVANCERAT (18-24)
+  {id:18, name:'Hälsa',         emoji:'🏥', topic:'hälsa, sjukdomar och läkarbesök', level:2},
+  {id:19, name:'Mat & recept',  emoji:'👨‍🍳', topic:'matlagning, recept och ingredienser', level:2},
+  {id:20, name:'Resor',         emoji:'✈️', topic:'resor, hotell och semester', level:2},
+  {id:21, name:'Vänner & chat', emoji:'💬', topic:'konversation, vänner och socialt umgänge', level:2},
+  {id:22, name:'Musik & kultur',emoji:'🎵', topic:'musik, serbisk kultur och traditioner', level:2},
+  {id:23, name:'Grammatik',     emoji:'📝', topic:'grundläggande serbisk grammatik och meningsbyggnad', level:2},
+  {id:24, name:'Nyheter',       emoji:'📰', topic:'aktuella ämnen och längre konversationer', level:2},
+];
+
+const BONUS_CHAPTERS = [
+  {id:100, name:'Kärleksfraser', emoji:'❤️', topic:'kärleksfraser och romantiska uttryck på serbiska', unlockCondition:'beginner', unlockDesc:'Klara alla nybörjarkapitel'},
+  {id:101, name:'Slang & humor', emoji:'😂', topic:'serbisk slang, vardagsuttryck och humor', unlockCondition:'medium', unlockDesc:'Klara alla mellannivåkapitel'},
+  {id:102, name:'Serbisk kultur',emoji:'🇷🇸', topic:'serbiska traditioner, högtider och kulturella uttryck', unlockCondition:'advanced', unlockDesc:'Klara alla avancerade kapitel'},
+  {id:103, name:'Mästarprov',    emoji:'🏆', topic:'blandade avancerade övningar från alla kategorier', unlockCondition:'all', unlockDesc:'Klara samtliga kapitel'},
+];
+
+const LEVEL_INFO = [
+  {label:'🟢 Nybörjare', range:[0,9],  cls:'lv-beginner', sub:'Kapitel 1–10'},
+  {label:'🟡 Mellannivå',range:[10,17], cls:'lv-medium',   sub:'Kapitel 11–18'},
+  {label:'🔴 Avancerat', range:[18,24], cls:'lv-advanced',  sub:'Kapitel 19–25'},
+  {label:'⭐ Bonus',     range:[],      cls:'lv-bonus',     sub:'Låses upp som belöning'},
+];
+
+// Chapter colors (25 + bonus)
+const CH_COLORS=['cc0','cc1','cc2','cc3','cc4','cc5','cc6','cc7','cc8','cc9','cc10','cc11','cc12','cc13','cc14','cc15','cc16','cc17','cc18','cc19','cc20','cc21','cc22','cc23','cc24'];
+const CH_ACCENTS=['#a78bfa','#60a5fa','#f472b6','#fb923c','#34d399','#f472b6','#38bdf8','#e879f9','#34d399','#94a3b8','#fb923c','#60a5fa','#facc15','#c084fc','#4ade80','#fb7185','#fbbf24','#38bdf8','#f87171','#a78bfa','#34d399','#60a5fa','#f472b6','#94a3b8','#fbbf24'];
+const CH_SHADOWS=['#7c3aed','#1d4ed8','#be185d','#ea580c','#059669','#be185d','#0284c7','#a21caf','#059669','#475569','#c2410c','#1d4ed8','#a16207','#7e22ce','#15803d','#be123c','#d97706','#0284c7','#dc2626','#6d28d9','#059669','#1d4ed8','#be185d','#374151','#b45309'];
+const CH_BGLIGHTS=['#ede9fe','#dbeafe','#fce7f3','#fff7ed','#d1fae5','#fce7f3','#e0f2fe','#fae8ff','#d1fae5','#f1f5f9','#ffedd5','#dbeafe','#fef9c3','#f3e8ff','#dcfce7','#fff1f2','#fef9c3','#e0f2fe','#fee2e2','#ede9fe','#d1fae5','#dbeafe','#fce7f3','#f1f5f9','#fef9c3'];
+
+// Bonus colors
+const BONUS_ACCENTS=['#f472b6','#fb923c','#a78bfa','#fbbf24'];
+const BONUS_SHADOWS=['#be185d','#ea580c','#7c3aed','#d97706'];
+const BONUS_BG=['#fce7f3','#fff7ed','#ede9fe','#fffbeb'];
+
+// ═══════════════════════════════════════════════════
+// FALLBACK WORDS per chapter
+// ═══════════════════════════════════════════════════
+const FALLBACK = {
+  0:[{swedish:'Hej',serbian:'Zdravo',serbian_latin:'Zdravo',emoji:'👋'},{swedish:'Hejdå',serbian:'Doviđenja',serbian_latin:'Doviđenja',emoji:'🙏'},{swedish:'Tack',serbian:'Hvala',serbian_latin:'Hvala',emoji:'💛'},{swedish:'Varsågod',serbian:'Molim',serbian_latin:'Molim',emoji:'😊'},{swedish:'God morgon',serbian:'Dobro jutro',serbian_latin:'Dobro jutro',emoji:'🌅'}],
+  1:[{swedish:'Ett',serbian:'Jedan',serbian_latin:'Jedan',emoji:'1️⃣'},{swedish:'Två',serbian:'Dva',serbian_latin:'Dva',emoji:'2️⃣'},{swedish:'Tre',serbian:'Tri',serbian_latin:'Tri',emoji:'3️⃣'},{swedish:'Tio',serbian:'Deset',serbian_latin:'Deset',emoji:'🔟'},{swedish:'Tjugo',serbian:'Dvadeset',serbian_latin:'Dvadeset',emoji:'2️⃣0️⃣'}],
+  2:[{swedish:'Röd',serbian:'Crvena',serbian_latin:'Crvena',emoji:'🔴'},{swedish:'Blå',serbian:'Plava',serbian_latin:'Plava',emoji:'🔵'},{swedish:'Grön',serbian:'Zelena',serbian_latin:'Zelena',emoji:'🟢'},{swedish:'Gul',serbian:'Žuta',serbian_latin:'Žuta',emoji:'🟡'},{swedish:'Svart',serbian:'Crna',serbian_latin:'Crna',emoji:'⚫'}],
+  3:[{swedish:'Hund',serbian:'Pas',serbian_latin:'Pas',emoji:'🐶'},{swedish:'Katt',serbian:'Mačka',serbian_latin:'Mačka',emoji:'🐱'},{swedish:'Häst',serbian:'Konj',serbian_latin:'Konj',emoji:'🐴'},{swedish:'Fågel',serbian:'Ptica',serbian_latin:'Ptica',emoji:'🐦'},{swedish:'Björn',serbian:'Medved',serbian_latin:'Medved',emoji:'🐻'}],
+  4:[{swedish:'Vatten',serbian:'Voda',serbian_latin:'Voda',emoji:'💧'},{swedish:'Bröd',serbian:'Hleb',serbian_latin:'Hleb',emoji:'🍞'},{swedish:'Pizza',serbian:'Pica',serbian_latin:'Pica',emoji:'🍕'},{swedish:'Kaffe',serbian:'Kafa',serbian_latin:'Kafa',emoji:'☕'},{swedish:'Äpple',serbian:'Jabuka',serbian_latin:'Jabuka',emoji:'🍎'}],
+  5:[{swedish:'Mamma',serbian:'Mama',serbian_latin:'Mama',emoji:'👩'},{swedish:'Pappa',serbian:'Tata',serbian_latin:'Tata',emoji:'👨'},{swedish:'Syster',serbian:'Sestra',serbian_latin:'Sestra',emoji:'👧'},{swedish:'Bror',serbian:'Brat',serbian_latin:'Brat',emoji:'👦'},{swedish:'Farmor',serbian:'Baka',serbian_latin:'Baka',emoji:'👵'}],
+  6:[{swedish:'Huvud',serbian:'Glava',serbian_latin:'Glava',emoji:'🧠'},{swedish:'Hand',serbian:'Ruka',serbian_latin:'Ruka',emoji:'✋'},{swedish:'Fot',serbian:'Noga',serbian_latin:'Noga',emoji:'🦶'},{swedish:'Hjärta',serbian:'Srce',serbian_latin:'Srce',emoji:'❤️'},{swedish:'Ögon',serbian:'Oči',serbian_latin:'Oči',emoji:'👁️'}],
+  7:[{swedish:'Tröja',serbian:'Majica',serbian_latin:'Majica',emoji:'👕'},{swedish:'Byxor',serbian:'Pantalone',serbian_latin:'Pantalone',emoji:'👖'},{swedish:'Skor',serbian:'Cipele',serbian_latin:'Cipele',emoji:'👟'},{swedish:'Klänning',serbian:'Haljina',serbian_latin:'Haljina',emoji:'👗'},{swedish:'Jacka',serbian:'Jakna',serbian_latin:'Jakna',emoji:'🧥'}],
+  8:[{swedish:'Glad',serbian:'Srećan',serbian_latin:'Srećan',emoji:'😊'},{swedish:'Ledsen',serbian:'Tužan',serbian_latin:'Tužan',emoji:'😢'},{swedish:'Arg',serbian:'Ljut',serbian_latin:'Ljut',emoji:'😠'},{swedish:'Trött',serbian:'Umoran',serbian_latin:'Umoran',emoji:'😴'},{swedish:'Rädd',serbian:'Uplašen',serbian_latin:'Uplašen',emoji:'😨'}],
+  9:[{swedish:'Kök',serbian:'Kuhinja',serbian_latin:'Kuhinja',emoji:'🍳'},{swedish:'Sovrum',serbian:'Spavaća soba',serbian_latin:'Spavaća soba',emoji:'🛏️'},{swedish:'Badrummet',serbian:'Kupatilo',serbian_latin:'Kupatilo',emoji:'🛁'},{swedish:'Bord',serbian:'Sto',serbian_latin:'Sto',emoji:'🪑'},{swedish:'Fönster',serbian:'Prozor',serbian_latin:'Prozor',emoji:'🪟'}],
+  10:[{swedish:'Huset',serbian:'Kuća',serbian_latin:'Kuća',emoji:'🏠'},{swedish:'Skolan',serbian:'Škola',serbian_latin:'Škola',emoji:'🏫'},{swedish:'Parken',serbian:'Park',serbian_latin:'Park',emoji:'🌳'},{swedish:'Sjukhuset',serbian:'Bolnica',serbian_latin:'Bolnica',emoji:'🏥'},{swedish:'Till höger',serbian:'Desno',serbian_latin:'Desno',emoji:'➡️'}],
+  11:[{swedish:'Buss',serbian:'Autobus',serbian_latin:'Autobus',emoji:'🚌'},{swedish:'Tåg',serbian:'Voz',serbian_latin:'Voz',emoji:'🚂'},{swedish:'Bil',serbian:'Auto',serbian_latin:'Auto',emoji:'🚗'},{swedish:'Flygplan',serbian:'Avion',serbian_latin:'Avion',emoji:'✈️'},{swedish:'Cykel',serbian:'Bicikl',serbian_latin:'Bicikl',emoji:'🚲'}],
+  12:[{swedish:'Idag',serbian:'Danas',serbian_latin:'Danas',emoji:'📅'},{swedish:'Imorgon',serbian:'Sutra',serbian_latin:'Sutra',emoji:'🌅'},{swedish:'Måndag',serbian:'Ponedeljak',serbian_latin:'Ponedeljak',emoji:'📆'},{swedish:'Januari',serbian:'Januar',serbian_latin:'Januar',emoji:'❄️'},{swedish:'Klockan tre',serbian:'Tri sata',serbian_latin:'Tri sata',emoji:'🕒'}],
+  13:[{swedish:'Matematik',serbian:'Matematika',serbian_latin:'Matematika',emoji:'➕'},{swedish:'Boken',serbian:'Knjiga',serbian_latin:'Knjiga',emoji:'📚'},{swedish:'Läraren',serbian:'Učitelj',serbian_latin:'Učitelj',emoji:'👩‍🏫'},{swedish:'Läxan',serbian:'Domaći zadatak',serbian_latin:'Domaći zadatak',emoji:'📝'},{swedish:'Klassen',serbian:'Razred',serbian_latin:'Razred',emoji:'🏫'}],
+  14:[{swedish:'Sol',serbian:'Sunce',serbian_latin:'Sunce',emoji:'☀️'},{swedish:'Regn',serbian:'Kiša',serbian_latin:'Kiša',emoji:'🌧️'},{swedish:'Snö',serbian:'Sneg',serbian_latin:'Sneg',emoji:'❄️'},{swedish:'Havet',serbian:'More',serbian_latin:'More',emoji:'🌊'},{swedish:'Blomma',serbian:'Cvet',serbian_latin:'Cvet',emoji:'🌸'}],
+  15:[{swedish:'Pengar',serbian:'Novac',serbian_latin:'Novac',emoji:'💰'},{swedish:'Affären',serbian:'Prodavnica',serbian_latin:'Prodavnica',emoji:'🏪'},{swedish:'Billig',serbian:'Jeftin',serbian_latin:'Jeftin',emoji:'💲'},{swedish:'Dyr',serbian:'Skup',serbian_latin:'Skup',emoji:'💎'},{swedish:'Kvitto',serbian:'Račun',serbian_latin:'Račun',emoji:'🧾'}],
+  16:[{swedish:'Fotboll',serbian:'Fudbal',serbian_latin:'Fudbal',emoji:'⚽'},{swedish:'Simning',serbian:'Plivanje',serbian_latin:'Plivanje',emoji:'🏊'},{swedish:'Musik',serbian:'Muzika',serbian_latin:'Muzika',emoji:'🎵'},{swedish:'Dans',serbian:'Ples',serbian_latin:'Ples',emoji:'💃'},{swedish:'Spel',serbian:'Igra',serbian_latin:'Igra',emoji:'🎮'}],
+  17:[{swedish:'Jag vill',serbian:'Hoću',serbian_latin:'Hoću',emoji:'🙋'},{swedish:'Jag kan',serbian:'Mogu',serbian_latin:'Mogu',emoji:'💪'},{swedish:'Förstå',serbian:'Razumeti',serbian_latin:'Razumeti',emoji:'🧠'},{swedish:'Hjälp!',serbian:'Pomoć!',serbian_latin:'Pomoć!',emoji:'🆘'},{swedish:'Lycka till',serbian:'Srećno',serbian_latin:'Srećno',emoji:'🍀'}],
+  18:[{swedish:'Sjuk',serbian:'Bolestan',serbian_latin:'Bolestan',emoji:'🤒'},{swedish:'Läkare',serbian:'Doktor',serbian_latin:'Doktor',emoji:'👨‍⚕️'},{swedish:'Medicin',serbian:'Lek',serbian_latin:'Lek',emoji:'💊'},{swedish:'Ont i magen',serbian:'Bol u stomaku',serbian_latin:'Bol u stomaku',emoji:'🤢'},{swedish:'Frisk',serbian:'Zdrav',serbian_latin:'Zdrav',emoji:'💚'}],
+  19:[{swedish:'Koka',serbian:'Kuvati',serbian_latin:'Kuvati',emoji:'🍳'},{swedish:'Blanda',serbian:'Mešati',serbian_latin:'Mešati',emoji:'🥣'},{swedish:'Salt',serbian:'So',serbian_latin:'So',emoji:'🧂'},{swedish:'Socker',serbian:'Šećer',serbian_latin:'Šećer',emoji:'🍬'},{swedish:'Recept',serbian:'Recept',serbian_latin:'Recept',emoji:'📋'}],
+  20:[{swedish:'Hotell',serbian:'Hotel',serbian_latin:'Hotel',emoji:'🏨'},{swedish:'Pass',serbian:'Pasoš',serbian_latin:'Pasoš',emoji:'🛂'},{swedish:'Strand',serbian:'Plaža',serbian_latin:'Plaža',emoji:'🏖️'},{swedish:'Karta',serbian:'Mapa',serbian_latin:'Mapa',emoji:'🗺️'},{swedish:'Semester',serbian:'Odmor',serbian_latin:'Odmor',emoji:'🌴'}],
+  21:[{swedish:'Kompis',serbian:'Drug',serbian_latin:'Drug',emoji:'👫'},{swedish:'Fika',serbian:'Kafa i razgovor',serbian_latin:'Kafa i razgovor',emoji:'☕'},{swedish:'Party',serbian:'Žurka',serbian_latin:'Žurka',emoji:'🎉'},{swedish:'Skratta',serbian:'Smejati se',serbian_latin:'Smejati se',emoji:'😂'},{swedish:'Sakna',serbian:'Nedostajati',serbian_latin:'Nedostajati',emoji:'🥺'}],
+  22:[{swedish:'Sång',serbian:'Pesma',serbian_latin:'Pesma',emoji:'🎤'},{swedish:'Slava',serbian:'Slava',serbian_latin:'Slava',emoji:'🕯️'},{swedish:'Turbofolk',serbian:'Turbofolk',serbian_latin:'Turbofolk',emoji:'🎶'},{swedish:'Tradition',serbian:'Tradicija',serbian_latin:'Tradicija',emoji:'🎭'},{swedish:'Rakija',serbian:'Rakija',serbian_latin:'Rakija',emoji:'🥃'}],
+  23:[{swedish:'Jag',serbian:'Ja',serbian_latin:'Ja',emoji:'🙋'},{swedish:'Du',serbian:'Ti',serbian_latin:'Ti',emoji:'👉'},{swedish:'Vi',serbian:'Mi',serbian_latin:'Mi',emoji:'👥'},{swedish:'Är (jag är)',serbian:'Jesam',serbian_latin:'Jesam',emoji:'✅'},{swedish:'Inte',serbian:'Nije',serbian_latin:'Nije',emoji:'❌'}],
+  24:[{swedish:'Nyheter',serbian:'Vesti',serbian_latin:'Vesti',emoji:'📰'},{swedish:'Politik',serbian:'Politika',serbian_latin:'Politika',emoji:'🗳️'},{swedish:'Sport-resultat',serbian:'Sportski rezultati',serbian_latin:'Sportski rezultati',emoji:'🏆'},{swedish:'Ekonomi',serbian:'Ekonomija',serbian_latin:'Ekonomija',emoji:'💹'},{swedish:'Väder-prognos',serbian:'Vremenska prognoza',serbian_latin:'Vremenska prognoza',emoji:'🌤️'}],
+  100:[{swedish:'Jag älskar dig',serbian:'Volim te',serbian_latin:'Volim te',emoji:'❤️'},{swedish:'Du är söt',serbian:'Sladak si',serbian_latin:'Sladak si',emoji:'🥰'},{swedish:'Kramar',serbian:'Zagrljaji',serbian_latin:'Zagrljaji',emoji:'🤗'},{swedish:'Saknar dig',serbian:'Nedostaješ mi',serbian_latin:'Nedostaješ mi',emoji:'🥺'},{swedish:'Pussar',serbian:'Poljupci',serbian_latin:'Poljupci',emoji:'😘'}],
+  101:[{swedish:'Coolt',serbian:'Kul',serbian_latin:'Kul',emoji:'😎'},{swedish:'Toppen',serbian:'Super',serbian_latin:'Super',emoji:'👌'},{swedish:'Inga problem',serbian:'Nema problema',serbian_latin:'Nema problema',emoji:'🤙'},{swedish:'Schysst',serbian:'Frajer',serbian_latin:'Frajer',emoji:'😏'},{swedish:'Seriöst',serbian:'Ozbiljno',serbian_latin:'Ozbiljno',emoji:'🤨'}],
+  102:[{swedish:'Jul',serbian:'Božić',serbian_latin:'Božić',emoji:'🎄'},{swedish:'Slava',serbian:'Slava',serbian_latin:'Slava',emoji:'🕯️'},{swedish:'Beograd',serbian:'Beograd',serbian_latin:'Beograd',emoji:'🏙️'},{swedish:'Folkdans',serbian:'Kolo',serbian_latin:'Kolo',emoji:'💃'},{swedish:'Rakija',serbian:'Rakija',serbian_latin:'Rakija',emoji:'🥃'}],
+  103:[{swedish:'Välkommen till Serbien',serbian:'Dobrodošli u Srbiju',serbian_latin:'Dobrodošli u Srbiju',emoji:'🇷🇸'},{swedish:'Jag pratar serbiska',serbian:'Govorim srpski',serbian_latin:'Govorim srpski',emoji:'🎓'},{swedish:'Förstår du?',serbian:'Razumeš li?',serbian_latin:'Razumeš li?',emoji:'🤔'},{swedish:'Bra gjort',serbian:'Bravo',serbian_latin:'Bravo',emoji:'👏'},{swedish:'Tills nästa gång',serbian:'Do sledećeg puta',serbian_latin:'Do sledećeg puta',emoji:'👋'}],
+};
+
+// ═══════════════════════════════════════════════════
+// WEEKLY CHALLENGES
+// ═══════════════════════════════════════════════════
+const WEEKLY_CHALLENGES = [
+  {phrase:'Volim te, mama!',     sv:'Jag älskar dig, mamma!',    target:'din mamma',  emoji:'❤️', icon:'👩'},
+  {phrase:'Kako si, bako?',      sv:'Hur mår du, mormor?',        target:'din mormor', emoji:'💛', icon:'👵'},
+  {phrase:'Zdravo! Kako si?',    sv:'Hej! Hur mår du?',           target:'din kompis', emoji:'👋', icon:'👫'},
+  {phrase:'Dobro jutro, tata!',  sv:'God morgon, pappa!',         target:'din pappa',  emoji:'🌅', icon:'👨'},
+  {phrase:'Hvala!',              sv:'Tack!',                       target:'vem som helst',emoji:'🙏',icon:'😊'},
+  {phrase:'Srećno!',             sv:'Lycka till!',                 target:'en vän',     emoji:'🍀', icon:'🤝'},
+  {phrase:'Laku noć!',           sv:'God natt!',                   target:'din familj', emoji:'🌙', icon:'🏠'},
+  {phrase:'Volim te, bako!',     sv:'Jag älskar dig, mormor!',    target:'din mormor', emoji:'💜', icon:'👵'},
+  {phrase:'Bravo!',              sv:'Bra gjort!',                  target:'din kompis', emoji:'👏', icon:'👫'},
+  {phrase:'Dobar dan!',          sv:'God dag!',                    target:'din lärare', emoji:'☀️', icon:'👩‍🏫'},
+  {phrase:'Kako si?',            sv:'Hur mår du?',                 target:'din pappa',  emoji:'💚', icon:'👨'},
+  {phrase:'Čestitam!',           sv:'Grattis!',                    target:'vem du vill',emoji:'🎉', icon:'🎊'},
+];
+
+const DEFAULT_PERSONS = [
+  {emoji:'👩', name:'Mamma'},
+  {emoji:'👨', name:'Pappa'},
+  {emoji:'👵', name:'Mormor/Baka'},
+  {emoji:'👴', name:'Morfar/Deda'},
+  {emoji:'👫', name:'Kompis'},
+  {emoji:'👩‍🏫', name:'Läraren'},
+];
+
+// ═══════════════════════════════════════════════════
+// ACHIEVEMENTS
+// ═══════════════════════════════════════════════════
+const ACHIEVEMENTS = [
+  {id:'first',    emoji:'🌱', name:'Första steget',    desc:'Klara din första lektion',                    check:g=>g.totalLessons>=1},
+  {id:'streak3',  emoji:'🔥', name:'På rulle',         desc:'3 dagars streak',                             check:g=>g.streak>=3},
+  {id:'streak7',  emoji:'🔥🔥',name:'Eldsjäl',         desc:'7 dagars streak',                             check:g=>g.streak>=7},
+  {id:'streak30', emoji:'💥', name:'Maratonlöpare',    desc:'30 dagars streak',                            check:g=>g.streak>=30},
+  {id:'xp100',    emoji:'⭐', name:'100 XP',           desc:'Samla 100 XP',                                check:g=>g.xp>=100},
+  {id:'xp500',    emoji:'🏅', name:'500 XP',           desc:'Samla 500 XP',                                check:g=>g.xp>=500},
+  {id:'xp1000',   emoji:'💫', name:'1000 XP',          desc:'Samla 1000 XP',                               check:g=>g.xp>=1000},
+  {id:'xp5000',   emoji:'🌟', name:'5000 XP',          desc:'Samla 5000 XP',                               check:g=>g.xp>=5000},
+  {id:'ch1',      emoji:'🎓', name:'Hälsningar klar',  desc:'Klara provet i kapitel 1',                    check:g=>g.chaptersDone.includes(0)},
+  {id:'beginner', emoji:'🟢', name:'Nybörjarmästare',  desc:'Klara alla 10 nybörjarkapitel',               check:g=>g.chaptersDone.filter(x=>x<10).length>=10},
+  {id:'medium',   emoji:'🟡', name:'Mellannivåmästare',desc:'Klara alla 8 mellannivåkapitel',              check:g=>g.chaptersDone.filter(x=>x>=10&&x<18).length>=8},
+  {id:'advanced', emoji:'🔴', name:'Avancerad mästare',desc:'Klara alla 7 avancerade kapitel',             check:g=>g.chaptersDone.filter(x=>x>=18&&x<25).length>=7},
+  {id:'all',      emoji:'🏆', name:'Serbisk mästare',  desc:'Klara samtliga 25 kapitel',                   check:g=>g.chaptersDone.length>=25},
+  {id:'daily1',   emoji:'☀️', name:'Daglig krigare',   desc:'Klara din första dagliga utmaning',           check:g=>g.dailyDone>=1},
+  {id:'daily7',   emoji:'🌟', name:'Veckokrigare',     desc:'Klara 7 dagliga utmaningar',                  check:g=>g.dailyDone>=7},
+  {id:'weekly1',  emoji:'💬', name:'Veckosocialen',    desc:'Klara din första veckoutmaning',              check:g=>g.weeklyDone>=1},
+  {id:'perfect',  emoji:'💎', name:'Perfekt prov',     desc:'Få 100% på ett prov',                         check:g=>g.perfectExams>=1},
+  {id:'dict20',   emoji:'📖', name:'Ordälskare',       desc:'Slå upp 20 ord i ordboken',                   check:g=>g.dictLookups>=20},
+  {id:'match50',  emoji:'🎯', name:'Matchmästare',     desc:'Para ihop 50 ordpar rätt',                    check:g=>g.matchedPairs>=50},
+];
+
+const LESSONS_PER_CHAPTER=3, FLASH_COUNT=5, GAME_COUNT=5, EXAM_SIZE=8, PASS_PCT=70;
+const STORAGE_KEY = 'serbiska_v3';
+
+// ═══════════════════════════════════════════════════
+// LOCALSTORAGE
+// ═══════════════════════════════════════════════════
+function defaultState() {
+  return {
+    dataVersion: DATA_VERSION,
+    userName: '', xp: 0, streak: 1, script: 'latin',
+    chaptersDone: [],
+    chaptersLocked: Array.from({length:25},(_,i)=>i).filter(i=>i>0),
+    bonusDone: [], bonusLocked: [100,101,102,103],
+    currentChapter: 0, currentLesson: 0, isExam: false, isBonus: false,
+    flashWords: [], flashIndex: 0,
+    gameIndex: 0, gameCorrect: 0, sessionXp: 0,
+    answered: false, q: null,
+    matchItems: [], matchSelected: null, matchDone: [],
+    totalLessons: 0, dailyDone: 0, perfectExams: 0,
+    dictLookups: 0, matchedPairs: 0, weeklyDone: 0,
+    dailyDoneToday: false, lastDailyDate: '',
+    weeklyDoneThisWeek: false, lastWeeklyDate: '',
+    currentWeeklyIdx: 0,
+    unlockedAchs: [],
+    customPersons: [],
+  };
+}
+
+function saveState() {
+  try {
+    const s = {...gs, flashWords:[], q:null, matchItems:[]};
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
+  } catch(e) {}
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return defaultState();
+    const saved = JSON.parse(raw);
+    const merged = {...defaultState(), ...saved};
+    // Recalculate main chapter locks
+    merged.chaptersLocked = Array.from({length:25},(_,i)=>i).filter(i=>i>0&&!merged.chaptersDone.includes(i-1));
+    // Recalculate bonus locks
+    const bv = checkBonusUnlocks(merged);
+    merged.bonusLocked = [100,101,102,103].filter(id=>!bv.includes(id));
+    // Daily reset
+    if (merged.lastDailyDate !== new Date().toDateString()) merged.dailyDoneToday = false;
+    // Weekly reset (by ISO week number)
+    const thisWeek = getWeekId();
+    if (merged.lastWeeklyDate !== thisWeek) merged.weeklyDoneThisWeek = false;
+    merged.dataVersion = DATA_VERSION;
+    return merged;
+  } catch(e) { return defaultState(); }
+}
+
+function getWeekId() {
+  const d = new Date(); const day = d.getDay() || 7;
+  d.setDate(d.getDate() + 4 - day);
+  return d.getFullYear() + '-W' + Math.ceil((((d - new Date(d.getFullYear(),0,1)) / 86400000) + 1) / 7);
+}
+
+function checkBonusUnlocks(state) {
+  const unlocked = [...(state.bonusDone||[])];
+  const done = state.chaptersDone || [];
+  const beginnerDone = done.filter(x=>x<10).length >= 10;
+  const mediumDone   = done.filter(x=>x>=10&&x<18).length >= 8;
+  const advancedDone = done.filter(x=>x>=18&&x<25).length >= 7;
+  const allDone      = done.length >= 25;
+  if (beginnerDone && !unlocked.includes(100)) unlocked.push(100);
+  if (mediumDone   && !unlocked.includes(101)) unlocked.push(101);
+  if (advancedDone && !unlocked.includes(102)) unlocked.push(102);
+  if (allDone      && !unlocked.includes(103)) unlocked.push(103);
+  return unlocked;
+}
+
+let gs = loadState();
+function save() { saveState(); }
+
+// ═══════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════
+const $ = id => document.getElementById(id);
+const cc = () => gs.currentChapter;
+const isBonus = () => gs.isBonus;
+const chInfo = () => isBonus() ? BONUS_CHAPTERS.find(c=>c.id===cc()) : CHAPTERS.find(c=>c.id===cc());
+const accent  = id => isBonus() ? BONUS_ACCENTS[BONUS_CHAPTERS.findIndex(c=>c.id===id)||0] : CH_ACCENTS[id!==undefined?id:cc()];
+const shadow  = id => isBonus() ? BONUS_SHADOWS[BONUS_CHAPTERS.findIndex(c=>c.id===id)||0] : CH_SHADOWS[id!==undefined?id:cc()];
+const chbg    = id => isBonus() ? BONUS_BG[BONUS_CHAPTERS.findIndex(c=>c.id===id)||0] : CH_BGLIGHTS[id!==undefined?id:cc()];
+const firstName = () => gs.userName ? gs.userName.split(' ')[0] : '';
+
+const ENCOURAGE = ['Fantastiskt, {n}! 🎉','Bra jobbat, {n}! 💪','Imponerande, {n}! ⭐','Du är grym, {n}! 🔥','Perfekt, {n}! 🎯','Vilken stjärna, {n}! 🌟','Jättebra, {n}! 🌈','Otroligt, {n}! 💥'];
+function encourage() {
+  const n = firstName();
+  const msg = ENCOURAGE[Math.floor(Math.random()*ENCOURAGE.length)];
+  return n && n!=='du' ? msg.replace('{n}',n) : msg.replace(', {n}','');
+}
+
+// ═══════════════════════════════════════════════════
+// TTS
+// ═══════════════════════════════════════════════════
+const ttsCache = {};
+async function speak(text, btnEl) {
+  if (!text) return;
+  if (btnEl) { btnEl.classList.add('loading'); btnEl.disabled = true; }
+  try {
+    let audio = ttsCache[text];
+    if (!audio) {
+      const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${ELEVENLABS_VOICE_ID}`, {
+        method:'POST',
+        headers:{'xi-api-key':ELEVENLABS_API_KEY,'Content-Type':'application/json','Accept':'audio/mpeg'},
+        body:JSON.stringify({text,model_id:'eleven_multilingual_v2',voice_settings:{stability:.5,similarity_boost:.75,style:.1,use_speaker_boost:true}})
+      });
+      if (!r.ok) throw new Error();
+      audio = URL.createObjectURL(await r.blob());
+      ttsCache[text] = audio;
+    }
+    const a = new Audio(audio); a.play();
+    a.onended = () => { if(btnEl){btnEl.classList.remove('loading');btnEl.disabled=false;} };
+  } catch(e) {
+    try { window.speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='hr'; u.rate=.78; window.speechSynthesis.speak(u); } catch(e2){}
+    if (btnEl) { btnEl.classList.remove('loading'); btnEl.disabled=false; }
+  }
+}
+
+function listenBtn(text, id='lb') {
+  return `<button class="listen-btn" id="${id}" onclick="speak('${text.replace(/'/g,"\\'")}',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>Lyssna</button>`;
+}
+
+// ═══════════════════════════════════════════════════
+// SOUND + XP + ACHIEVEMENTS
+// ═══════════════════════════════════════════════════
+function playSound(good) {
+  try {
+    const ctx=new(window.AudioContext||window.webkitAudioContext)(),o=ctx.createOscillator(),g=ctx.createGain();
+    o.connect(g);g.connect(ctx.destination);
+    if(good){o.frequency.setValueAtTime(523,ctx.currentTime);o.frequency.setValueAtTime(659,ctx.currentTime+.1);o.frequency.setValueAtTime(784,ctx.currentTime+.2);}
+    else{o.frequency.setValueAtTime(300,ctx.currentTime);o.frequency.setValueAtTime(220,ctx.currentTime+.15);}
+    g.gain.setValueAtTime(.14,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.45);o.start();o.stop(ctx.currentTime+.5);
+  } catch(e){}
+}
+
+function showXpPop(xp, el) {
+  const p=document.createElement('div'); p.className='xp-pop'; p.textContent='+'+xp+' XP';
+  const r=el?el.getBoundingClientRect():{left:150,top:200};
+  p.style.cssText=`left:${r.left+r.width/2-24}px;top:${r.top-10}px;`;
+  document.body.appendChild(p); setTimeout(()=>p.remove(),950);
+}
+
+function checkAchievements() {
+  ACHIEVEMENTS.forEach(a=>{
+    if (!gs.unlockedAchs.includes(a.id) && a.check(gs)) {
+      gs.unlockedAchs.push(a.id);
+      showToast(a.emoji, a.name);
+      save();
+    }
+  });
+  // Check bonus unlocks
+  const newUnlocks = checkBonusUnlocks(gs);
+  newUnlocks.forEach(id=>{
+    if (gs.bonusLocked.includes(id)) {
+      gs.bonusLocked = gs.bonusLocked.filter(x=>x!==id);
+      const bc = BONUS_CHAPTERS.find(c=>c.id===id);
+      if (bc) {
+        setTimeout(()=>showBonusModal(bc), 800);
+      }
+      save();
+    }
+  });
+}
+
+function showToast(emoji, name) {
+  const t=document.createElement('div'); t.className='toast';
+  t.innerHTML=`<span style="font-size:26px">${emoji}</span><div><div style="font-size:11px;color:#92400e;font-weight:900;">ACHIEVEMENT!</div><div style="font-size:14px;color:#2d2640;font-weight:800;">${name}</div></div>`;
+  document.body.appendChild(t);
+  setTimeout(()=>{t.style.transition='opacity .4s';t.style.opacity='0';setTimeout(()=>t.remove(),400);},2800);
+}
+
+function showBonusModal(bc) {
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML=`<div class="modal-box">
+    <div class="modal-emoji">${bc.emoji}</div>
+    <div class="modal-title">Bonuskapitel upplåst!</div>
+    <div class="modal-sub"><strong>${bc.name}</strong> är nu tillgängligt!<br><br>Du har förtjänat det – fortsätt så!</div>
+    <button class="action-btn btn-green" style="width:100%;" onclick="this.closest('.modal-overlay').remove()">🎉 Häftig!</button>
+  </div>`;
+  document.body.appendChild(overlay);
+}
+
+// ═══════════════════════════════════════════════════
+// NAV + TOPBAR
+// ═══════════════════════════════════════════════════
+function renderNav(a) {
+  return `<div class="nav">
+    <button class="nav-btn ${a==='map'?'active':''}" onclick="showMap()"><span class="ni">🗺️</span>Lektioner</button>
+    <button class="nav-btn ${a==='daily'?'active':''}" onclick="showDailyTab()"><span class="ni">⚡</span>Utmaning</button>
+    <button class="nav-btn ${a==='dict'?'active':''}" onclick="showDict()"><span class="ni">🔍</span>Ordbok</button>
+    <button class="nav-btn ${a==='ach'?'active':''}" onclick="showAch()"><span class="ni">🏅</span>Badges</button>
+  </div>`;
+}
+
+function renderTopbar(pct, color) {
+  return `<div class="topbar"><div class="prog-wrap"><div class="prog-bar" style="width:${pct}%;background:${color||CH_ACCENTS[cc()]};"></div></div><div class="pill pill-xp">⭐ ${gs.xp}</div><div class="pill pill-streak">🔥 ${gs.streak}</div></div>`;
+}
+
+function wrapLesson(html, pct) {
+  const bg = isBonus() ? BONUS_BG[BONUS_CHAPTERS.findIndex(c=>c.id===cc())] || '#faf5ff' : CH_BGLIGHTS[cc()] || '#f0eeff';
+  const ac = isBonus() ? BONUS_ACCENTS[BONUS_CHAPTERS.findIndex(c=>c.id===cc())] || '#c084fc' : CH_ACCENTS[cc()] || '#a78bfa';
+  return `<div class="lesson-wrap" style="background:${bg};border-radius:var(--radius);">${renderTopbar(pct,ac)}<div class="slide-in">${html}</div></div>`;
+}
+
+// ═══════════════════════════════════════════════════
+// ONBOARDING
+// ═══════════════════════════════════════════════════
+function showOnboarding() {
+  $('app').innerHTML=`<div class="slide-in"><div class="onboard-wrap">
+    <div class="onboard-flag">🇷🇸</div>
+    <div class="onboard-title">Lär dig serbiska!</div>
+    <div class="onboard-sub">Välkommen till din personliga serbisk-app.<br>Vad heter du?</div>
+    <input class="name-input" id="ni" type="text" placeholder="Ditt namn..." maxlength="20" autocomplete="off"/>
+    <button class="start-btn" onclick="startOnboarding()">Sätt igång! 🚀</button>
+  </div></div>`;
+  $('ni')?.focus();
+  $('ni')?.addEventListener('keydown',e=>{if(e.key==='Enter')startOnboarding();});
+}
+
+function startOnboarding() {
+  gs.userName = (($('ni')||{}).value||'').trim() || 'du';
+  // Set weekly challenge person cycle
+  gs.currentWeeklyIdx = 0;
+  save(); showMap();
+}
+
+// ═══════════════════════════════════════════════════
+// MAP
+// ═══════════════════════════════════════════════════
+function showMap() {
+  const name = firstName();
+
+  // Build level sections
+  let sectionsHtml = '';
+  LEVEL_INFO.forEach((lv,li)=>{
+    if (li < 3) {
+      const chsInLevel = CHAPTERS.filter(ch=>ch.id>=lv.range[0]&&ch.id<=lv.range[1]);
+      const doneInLevel = chsInLevel.filter(ch=>gs.chaptersDone.includes(ch.id)).length;
+      sectionsHtml += `<div class="level-header ${lv.cls}"><div class="level-dot"></div><div class="level-title">${lv.label}</div><div class="level-sub">${doneInLevel}/${chsInLevel.length} klara</div></div>`;
+      sectionsHtml += `<div class="ch-grid">`;
+      chsInLevel.forEach(ch=>{
+        const done=gs.chaptersDone.includes(ch.id),locked=gs.chaptersLocked.includes(ch.id);
+        const cls=`ch-card ${CH_COLORS[ch.id]}`+(locked?' locked':'')+(done?' done':'');
+        const oc=locked?'':` onclick="startChapter(${ch.id},false)"`;
+        const badge=done?'✅':locked?'🔒':'';
+        sectionsHtml+=`<div class="${cls}"${oc}>${badge?`<div class="ch-status">${badge}</div>`:''}<div class="ch-bg-emoji">${ch.emoji}</div><div class="ch-name">${ch.name}</div><div class="ch-meta">${done?'Klar ✓':'3 lektioner + prov'}</div></div>`;
+      });
+      sectionsHtml += `</div>`;
+    } else {
+      // Bonus
+      sectionsHtml += `<div class="level-header ${lv.cls}"><div class="level-dot"></div><div class="level-title">${lv.label}</div><div class="level-sub">Tjänas ihop</div></div>`;
+      sectionsHtml += `<div class="ch-grid">`;
+      BONUS_CHAPTERS.forEach((bc,bi)=>{
+        const done=gs.bonusDone.includes(bc.id),locked=gs.bonusLocked.includes(bc.id);
+        const bg=BONUS_BG[bi],color=BONUS_ACCENTS[bi];
+        const cls=`ch-card`+(locked?' bonus-locked':done?' bonus-unlocked':' bonus-unlocked');
+        const oc=locked?'':` onclick="startChapter(${bc.id},true)"`;
+        sectionsHtml+=`<div class="${cls}" style="background:${bg};color:${color};"${oc}>${locked?`<div class="ch-status">🔒</div>`:done?`<div class="ch-status">✅</div>`:''}<div class="ch-bg-emoji">${bc.emoji}</div><div class="ch-name">${bc.name}</div><div class="ch-meta">${done?'Klar ✓':locked?bc.unlockDesc:'Gör!'}</div></div>`;
+      });
+      sectionsHtml += `</div>`;
+    }
+  });
+
+  $('app').innerHTML=`<div class="slide-in">
+    ${renderNav('map')}
+    ${renderTopbar(Math.min(100,gs.xp/50),'#a78bfa')}
+    ${name&&name!=='du'?`<div class="profile-card"><div class="profile-avatar">${name.charAt(0).toUpperCase()}</div><div><div class="profile-name">Hej, ${name}! 👋</div><div class="profile-sub">${gs.xp} XP · Streak ${gs.streak} dagar · ${gs.chaptersDone.length}/25 kapitel</div></div></div>`:''}
+    <div class="script-row">
+      <button class="script-btn ${gs.script==='latin'?'active':''}" onclick="gs.script='latin';save();showMap()">Latinsk skrift</button>
+      <button class="script-btn ${gs.script==='cyrillic'?'active':''}" onclick="gs.script='cyrillic';save();showMap()">Kyrillisk</button>
+    </div>
+    ${sectionsHtml}
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════
+// CHAPTER START
+// ═══════════════════════════════════════════════════
+function startChapter(id, bonus) {
+  gs.currentChapter=id; gs.isBonus=!!bonus;
+  gs.currentLesson=0; gs.isExam=false;
+  gs.flashWords=[]; gs.flashIndex=0;
+  gs.gameIndex=0; gs.gameCorrect=0; gs.sessionXp=0; gs.answered=false;
+  save(); loadFlashWords();
+}
+
+async function loadFlashWords() {
+  $('app').innerHTML=wrapLesson(`<div class="loading-msg">Laddar ord...</div>`,0);
+  const ch = chInfo();
+  const prompt=`Ge mig exakt ${FLASH_COUNT} nybörjarvänliga serbiska ord/fraser på temat "${ch.topic}". Skript: ${gs.script==='latin'?'Latinsk (srpska latinica)':'Kyrillisk (ćirilica)'}. Svara BARA med JSON array utan backticks: [{"swedish":"...","serbian":"...","serbian_latin":"...","phonetic":"...","emoji":"..."}] Phonetic = enkel svensk uttalsskrift t.ex. "zdra-vo", "do-bro yut-ro".`;
+  try {
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_API_KEY,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,messages:[{role:'user',content:prompt}]})});
+    if(!r.ok)throw new Error();
+    const d=await r.json();
+    const arr=JSON.parse(d.content[0].text.replace(/```json|```/g,'').trim());
+    if(!Array.isArray(arr)||!arr.length)throw new Error();
+    gs.flashWords=arr;
+  } catch(e) { gs.flashWords=FALLBACK[cc()]||FALLBACK[0]; }
+  gs.flashIndex=0; renderFlash();
+}
+
+function renderFlash() {
+  if(gs.flashIndex>=gs.flashWords.length){startGamePhase();return;}
+  const ch=chInfo(), w=gs.flashWords[gs.flashIndex];
+  const sr=gs.script==='latin'?(w.serbian_latin||w.serbian):w.serbian;
+  const pct=Math.round((gs.flashIndex/(FLASH_COUNT+GAME_COUNT))*100);
+  const accentColor = isBonus() ? BONUS_ACCENTS[BONUS_CHAPTERS.findIndex(c=>c.id===cc())] : CH_ACCENTS[cc()];
+  const shadowColor = isBonus() ? BONUS_SHADOWS[BONUS_CHAPTERS.findIndex(c=>c.id===cc())] : CH_SHADOWS[cc()];
+  $('app').innerHTML=wrapLesson(`
+    <button class="back-btn" onclick="showMap()">← Tillbaka</button>
+    <div class="lesson-meta">${ch.emoji} ${ch.name} · Lektion ${gs.currentLesson+1} · Ord ${gs.flashIndex+1}/${FLASH_COUNT}</div>
+    <div class="flash-card" id="fc">
+      <span class="flash-emoji">${w.emoji}</span>
+      <div class="flash-sr">${sr}</div>
+      ${w.phonetic?`<div style="font-size:13px;color:#a78bfa;font-weight:700;margin-bottom:4px;font-style:italic;">🗣 ${w.phonetic}</div>`:''}
+      <div class="flash-sv">${w.swedish}</div>
+      ${listenBtn(w.serbian_latin||w.serbian)}
+    </div>
+    <div class="btn-row">
+      <button class="action-btn btn-skip" onclick="nextFlash()">Hoppa över</button>
+      <button class="action-btn" style="background:${accentColor};color:#fff;box-shadow:0 4px 0 ${shadowColor};" onclick="learnFlash()">Kan det! ✓</button>
+    </div>`,pct);
+  speak(w.serbian_latin||w.serbian);
+}
+
+function nextFlash(){gs.flashIndex++;renderFlash();}
+function learnFlash(){gs.xp+=5;gs.sessionXp+=5;showXpPop(5,$('fc'));gs.flashIndex++;save();renderFlash();}
+function startGamePhase(){gs.gameIndex=0;gs.gameCorrect=0;gs.answered=false;loadGame();}
+
+// ═══════════════════════════════════════════════════
+// GAME ENGINE
+// ═══════════════════════════════════════════════════
+function buildFallback() {
+  const words=gs.flashWords,t=getGameType();
+  if(t==='match'){
+    const pairs=words.slice(0,4).map(w=>({swedish:w.swedish,serbian:gs.script==='latin'?(w.serbian_latin||w.serbian):w.serbian}));
+    return {type:'match',pairs,hint:'Para ihop orden!',feedback_correct:encourage(),feedback_wrong:'Nästan – försök igen!',xp:20};
+  } else if(t==='trueFalse'){
+    const w=words[gs.gameIndex%words.length],ww=words[(gs.gameIndex+1)%words.length],correct=Math.random()>.5;
+    const shown_serbian=correct?(gs.script==='latin'?(w.serbian_latin||w.serbian):w.serbian):(gs.script==='latin'?(ww.serbian_latin||ww.serbian):ww.serbian);
+    return {type:'trueFalse',shown_swedish:w.swedish,shown_serbian,phonetic:w.phonetic||'',is_correct:correct,hint:'',feedback_correct:encourage(),feedback_wrong:'Fel – titta noga!',xp:15};
+  } else if(t==='multipleChoice'){
+    const w=words[gs.gameIndex%words.length];
+    const wrong=words.filter((_,i)=>i!==gs.gameIndex%words.length).map(x=>x.swedish).sort(()=>Math.random()-.5).slice(0,3);
+    const options=[w.swedish,...wrong].sort(()=>Math.random()-.5);
+    return {type:'multipleChoice',serbian:gs.script==='latin'?(w.serbian_latin||w.serbian):w.serbian,phonetic:w.phonetic||'',correct_swedish:w.swedish,options,emoji:w.emoji,hint:'Vad betyder ordet?',feedback_correct:encourage(),feedback_wrong:`Rätt: ${w.swedish}`,xp:15};
+  } else if(t==='reverseWrite'){
+    const w=words[gs.gameIndex%words.length];
+    return {type:'reverseWrite',serbian:gs.script==='latin'?(w.serbian_latin||w.serbian):w.serbian,phonetic:w.phonetic||'',correct_swedish:w.swedish,emoji:w.emoji,hint:'Skriv den svenska översättningen',feedback_correct:encourage()+' Du kan svenska och serbiska!',feedback_wrong:`Rätt: ${w.swedish}`,xp:20};
+  } else {
+    const w=words[gs.gameIndex%words.length];
+    return {type:'write',swedish:w.swedish,serbian:gs.script==='latin'?(w.serbian_latin||w.serbian):w.serbian,serbian_latin:w.serbian_latin||w.serbian,phonetic:w.phonetic||'',emoji:w.emoji,hint:'Skriv det serbiska ordet',feedback_correct:encourage()+' Perfekt stavning!',feedback_wrong:`Rätt: ${gs.script==='latin'?(w.serbian_latin||w.serbian):w.serbian}`,xp:20};
+  }
+}
+
+// Returns game type based on lesson number for progressive difficulty
+function getGameType() {
+  if(gs.isExam) {
+    const examTypes=['write','multipleChoice','match','trueFalse','write','reverseWrite','match','multipleChoice'];
+    return examTypes[gs.gameIndex%examTypes.length];
+  }
+  const lesson = gs.currentLesson; // 0, 1, 2
+  const lessonTypes = [
+    ['match','trueFalse','multipleChoice','match','trueFalse'],       // Lektion 1: lätt
+    ['multipleChoice','write','trueFalse','multipleChoice','match'],   // Lektion 2: medel
+    ['write','reverseWrite','match','reverseWrite','write'],           // Lektion 3: svårast
+  ];
+  return lessonTypes[lesson%3][gs.gameIndex%5];
+}
+
+async function loadGame() {
+  const total=gs.isExam?EXAM_SIZE:GAME_COUNT;
+  if(gs.gameIndex>=total){gs.isExam?showExamResult():showLessonResult();return;}
+  gs.answered=false;
+  const cur=gs.isExam?gs.gameIndex:(FLASH_COUNT+gs.gameIndex);
+  $('app').innerHTML=wrapLesson(`<div class="loading-msg">Nästa övning...</div>`,Math.round((cur/(FLASH_COUNT+GAME_COUNT))*100));
+  const type=getGameType();
+  const wl=gs.flashWords.map(w=>`${w.swedish}=${gs.script==='latin'?(w.serbian_latin||w.serbian):w.serbian}`).join(',');
+  const name=firstName();
+  const typeSchemas = {
+    match: ',"pairs":[{"swedish":"...","serbian":"..."},{"swedish":"...","serbian":"..."},{"swedish":"...","serbian":"..."},{"swedish":"...","serbian":"..."}]',
+    trueFalse: ',"shown_swedish":"...","shown_serbian":"...","phonetic":"...","is_correct":true',
+    multipleChoice: ',"serbian":"...","phonetic":"...","correct_swedish":"...","options":["...","...","...","..."],"emoji":"..."',
+    reverseWrite: ',"serbian":"...","phonetic":"...","correct_swedish":"...","emoji":"..."',
+    write: ',"serbian_latin":"...","phonetic":"..."',
+  };
+  const extra = typeSchemas[type] || typeSchemas.write;
+  const prompt=`Serbisk övning typ "${type}" baserat på: ${wl}. Skript: ${gs.script==='latin'?'Latinsk':'Kyrillisk'}. ${gs.isExam?'PROV.':'Nybörjare, lektion '+(gs.currentLesson+1)+'/3.'} ${name&&name!=='du'?`Eleven heter ${name}, använd namnet i feedback_correct.`:''} phonetic = enkel uttalsskrift t.ex. "zdra-vo". Svara BARA med JSON utan backticks: {"type":"${type}","swedish":"...","serbian":"...","emoji":"...","hint":"...","feedback_correct":"...","feedback_wrong":"..."${extra},"xp":${gs.isExam?30:20}}`;
+  try {
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_API_KEY,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,messages:[{role:'user',content:prompt}]})});
+    if(!r.ok)throw new Error();
+    const d=await r.json();
+    gs.q=JSON.parse(d.content[0].text.replace(/```json|```/g,'').trim());
+  } catch(e) { gs.q=buildFallback(); }
+  renderGame();
+}
+
+function renderGame() {
+  const q=gs.q, ch=chInfo(), isExam=gs.isExam;
+  const cur=isExam?gs.gameIndex:(FLASH_COUNT+gs.gameIndex);
+  const pct=Math.round((cur/(isExam?EXAM_SIZE:(FLASH_COUNT+GAME_COUNT)))*100);
+  const sp=q.serbian_latin||q.serbian||'';
+  const accentColor = isBonus() ? BONUS_ACCENTS[BONUS_CHAPTERS.findIndex(c=>c.id===cc())] : CH_ACCENTS[cc()];
+  const shadowColor = isBonus() ? BONUS_SHADOWS[BONUS_CHAPTERS.findIndex(c=>c.id===cc())] : CH_SHADOWS[cc()];
+  const tag=isExam?`<div class="game-tag exam-tag">📝 PROV – ${ch.name}</div>`:`<div class="game-tag">${ch.emoji} Lektion ${gs.currentLesson+1} · Övning ${gs.gameIndex+1}/${GAME_COUNT}</div>`;
+  const phoneticHtml = q.phonetic ? `<div style="font-size:12px;color:#a78bfa;font-weight:700;font-style:italic;margin:3px 0 8px;">🗣 ${q.phonetic}</div>` : '';
+  let inner='';
+  if(q.type==='match'){
+    const items=[...q.pairs.map(p=>({text:p.swedish,type:'sv',pair:p})),...q.pairs.map(p=>({text:p.serbian,type:'sr',pair:p}))].sort(()=>Math.random()-.5);
+    gs.matchItems=items;gs.matchSelected=null;gs.matchDone=[];
+    inner=`${tag}<div class="game-q">Para ihop orden</div><div class="game-hint">${q.hint||''}</div><div class="match-grid">${items.map((it,i)=>`<div class="match-item" id="mi${i}" onclick="selMatch(${i})">${it.text}</div>`).join('')}</div><div id="fb"></div>`;
+  } else if(q.type==='trueFalse'){
+    inner=`${tag}<div class="game-q">Sant eller falskt?</div>${listenBtn(sp)}<div class="tf-word">${q.shown_serbian}</div>${phoneticHtml}<div class="tf-sv">= "${q.shown_swedish}"</div><div class="tf-row"><button class="tf-btn tf-sant" id="tf-y" onclick="checkTF(true)">✓ Sant</button><button class="tf-btn tf-falskt" id="tf-n" onclick="checkTF(false)">✗ Falskt</button></div><div id="fb"></div>`;
+  } else if(q.type==='multipleChoice'){
+    const opts=(q.options||[]).map((opt,i)=>`<button class="mc-btn" id="mc${i}" onclick="checkMC('${opt.replace(/'/g,"\\'")}')">${opt}</button>`).join('');
+    inner=`${tag}<div class="game-q">${q.emoji||''} ${q.serbian}</div>${phoneticHtml}<div class="game-hint">${q.hint||'Vad betyder ordet?'}</div>${listenBtn(sp)}<div class="mc-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;">${opts}</div><div id="fb"></div>`;
+  } else if(q.type==='reverseWrite'){
+    inner=`${tag}<div class="game-q">${q.emoji||''} ${q.serbian}</div>${phoneticHtml}<div class="game-hint">${q.hint||'Skriv den svenska översättningen'}</div>${listenBtn(sp)}<input class="write-input" id="wi" type="text" placeholder="Skriv på svenska…" autocomplete="off" autocorrect="off" spellcheck="false"/><div id="fb"></div><button class="action-btn" id="cb" onclick="checkReverseWrite()" style="width:100%;background:${accentColor};color:#fff;box-shadow:0 4px 0 ${shadowColor};">Kontrollera</button>`;
+  } else {
+    inner=`${tag}<div class="game-q">${q.emoji||''} ${q.swedish}</div><div class="game-hint">${q.hint||''}</div>${listenBtn(sp)}<div class="tf-word" style="font-size:18px;margin:8px 0 4px;">${sp}</div>${phoneticHtml}<input class="write-input" id="wi" type="text" placeholder="Skriv på serbiska…" autocomplete="off" autocorrect="off" spellcheck="false"/><div id="fb"></div><button class="action-btn" id="cb" onclick="checkWrite()" style="width:100%;background:${accentColor};color:#fff;box-shadow:0 4px 0 ${shadowColor};">Kontrollera</button>`;
+  }
+  $('app').innerHTML=wrapLesson(`<button class="back-btn" onclick="showMap()">← Tillbaka</button><div class="game-card" id="gc">${inner}</div>`,pct);
+  if(q.type==='write')$('wi')?.addEventListener('keydown',e=>{if(e.key==='Enter'&&!gs.answered)checkWrite();});
+  if(q.type==='reverseWrite')$('wi')?.addEventListener('keydown',e=>{if(e.key==='Enter'&&!gs.answered)checkReverseWrite();});
+  if(q.type==='trueFalse'||q.type==='multipleChoice'||q.type==='reverseWrite')speak(sp);
+}
+
+function checkMC(chosen){
+  if(gs.answered)return; gs.answered=true;
+  const correct=chosen===gs.q.correct_swedish;
+  document.querySelectorAll('.mc-btn').forEach(btn=>{
+    btn.disabled=true;
+    if(btn.textContent===gs.q.correct_swedish) btn.style.cssText='background:#d1fae5;color:#065f46;border:2px solid #10b981;border-radius:12px;padding:12px;font-family:Nunito,sans-serif;font-size:14px;font-weight:900;';
+    else if(btn.textContent===chosen&&!correct) btn.style.cssText='background:#fee2e2;color:#991b1b;border:2px solid #f87171;border-radius:12px;padding:12px;font-family:Nunito,sans-serif;font-size:14px;font-weight:900;';
+  });
+  showFeedback(correct);
+}
+
+function checkReverseWrite(){
+  if(gs.answered)return; const val=($('wi')||{}).value||''; if(!val.trim())return;
+  gs.answered=true;
+  const correct=val.trim().toLowerCase()===(gs.q.correct_swedish||'').trim().toLowerCase();
+  const inp=$('wi'); if(inp){inp.disabled=true;inp.classList.add(correct?'correct':'wrong');}
+  showFeedback(correct);
+}
+
+function selMatch(i){
+  if(gs.answered)return;
+  const items=gs.matchItems;if(gs.matchDone.includes(i))return;
+  if(gs.matchSelected===null){gs.matchSelected=i;$('mi'+i)?.classList.add('selected');}
+  else{
+    const a=gs.matchSelected,b=i;$('mi'+a)?.classList.remove('selected');
+    const ok=items[a].pair===items[b].pair&&items[a].type!==items[b].type;
+    if(ok){
+      playSound(true);[$('mi'+a),$('mi'+b)].forEach(el=>{if(el){el.classList.add('matched');el.onclick=null;}});
+      gs.matchDone.push(a,b);gs.xp+=3;gs.sessionXp+=3;gs.matchedPairs++;showXpPop(3,$('mi'+b));save();
+      if(gs.matchDone.length>=items.length){gs.gameCorrect++;setTimeout(()=>showFeedback(true),300);}
+    } else {
+      playSound(false);[$('mi'+a),$('mi'+b)].forEach(el=>{if(el){el.classList.add('wrong-fl');setTimeout(()=>el?.classList.remove('wrong-fl'),500);}});
+    }
+    gs.matchSelected=null;
+  }
+}
+
+function checkTF(ans){
+  if(gs.answered)return;gs.answered=true;
+  const correct=ans===gs.q.is_correct;
+  $('tf-y').disabled=true;$('tf-n').disabled=true;
+  $('tf-y').classList.toggle('correct',gs.q.is_correct===true);$('tf-n').classList.toggle('correct',gs.q.is_correct===false);
+  if(!correct)$(ans?'tf-y':'tf-n').classList.add('wrong');
+  showFeedback(correct);
+}
+
+function checkWrite(){
+  if(gs.answered)return;const val=($('wi')||{}).value||'';if(!val.trim())return;
+  gs.answered=true;const correct=val.trim().toLowerCase()===gs.q.serbian.trim().toLowerCase();
+  const inp=$('wi');if(inp){inp.disabled=true;inp.classList.add(correct?'correct':'wrong');}
+  showFeedback(correct);
+}
+
+function showFeedback(correct){
+  const q=gs.q,xp=correct?(q.xp||20):4;
+  playSound(correct);gs.xp+=xp;gs.sessionXp+=xp;if(correct)gs.gameCorrect++;
+  const fb=$('fb');if(fb)fb.innerHTML=`<div class="feedback ${correct?'good':'bad'}">${correct?q.feedback_correct:q.feedback_wrong}<div><span class="xp-tag">+${xp} XP</span></div></div>`;
+  const gc=$('gc');if(gc){gc.classList.remove('pop','shake');void gc.offsetWidth;gc.classList.add(correct?'pop':'shake');}
+  showXpPop(xp,fb);save();
+  const next=`gs.gameIndex++;gs.answered=false;loadGame();`;
+  const btn=`<button class="action-btn btn-green" style="width:100%;margin-top:12px;" onclick="${next}">Fortsätt →</button>`;
+  if(q.type==='write'){const cb=$('cb');if(cb)cb.outerHTML=btn;}
+  else if(gc&&(q.type!=='match'||gs.matchDone.length>=(gs.matchItems?.length||0)))gc.insertAdjacentHTML('beforeend',btn);
+  checkAchievements();
+}
+
+// ═══════════════════════════════════════════════════
+// RESULTS
+// ═══════════════════════════════════════════════════
+function showLessonResult(){
+  const pct=Math.round((gs.gameCorrect/GAME_COUNT)*100);
+  const ch=chInfo(),nxt=gs.currentLesson+1,isLast=nxt>=LESSONS_PER_CHAPTER;
+  const medal=pct>=80?'🏆':pct>=60?'⭐':'💪';
+  gs.totalLessons++;save();
+  $('app').innerHTML=wrapLesson(`<div class="result-wrap">
+    <div class="result-big">${medal}</div>
+    <div class="result-title">${encourage()}</div>
+    <div class="result-sub">${isLast?`Alla lektioner i ${ch.name} klara!`:`${LESSONS_PER_CHAPTER-nxt} lektion(er) kvar`}</div>
+    <div class="stat-row"><div class="stat-box"><div class="stat-val">${gs.sessionXp}</div><div class="stat-lbl">XP tjänat</div></div><div class="stat-box"><div class="stat-val">${gs.gameCorrect}/${GAME_COUNT}</div><div class="stat-lbl">Rätt</div></div><div class="stat-box"><div class="stat-val">${pct}%</div><div class="stat-lbl">Precision</div></div></div>
+    ${isLast?`<button class="action-btn btn-orange" style="width:100%;margin-bottom:10px;" onclick="startExam()">Dags för provet! 📝</button>`:`<button class="action-btn btn-green" style="width:100%;margin-bottom:10px;" onclick="startNextLesson()">Nästa lektion →</button>`}
+    <button class="action-btn btn-ghost" style="width:100%;" onclick="showMap()">← Kapitelkarta</button>
+  </div>`,100);
+  checkAchievements();
+}
+
+function startNextLesson(){gs.currentLesson++;gs.flashWords=[];gs.flashIndex=0;gs.gameIndex=0;gs.gameCorrect=0;gs.sessionXp=0;gs.answered=false;save();loadFlashWords();}
+function startExam(){gs.isExam=true;gs.gameIndex=0;gs.gameCorrect=0;gs.sessionXp=0;gs.answered=false;save();loadGame();}
+
+function showExamResult(){
+  const pct=Math.round((gs.gameCorrect/EXAM_SIZE)*100);
+  const passed=pct>=PASS_PCT,ch=chInfo();
+  if(passed){
+    if(isBonus()){
+      if(!gs.bonusDone.includes(cc()))gs.bonusDone.push(cc());
+    } else {
+      if(!gs.chaptersDone.includes(cc()))gs.chaptersDone.push(cc());
+      const nxt=cc()+1;if(nxt<25)gs.chaptersLocked=gs.chaptersLocked.filter(x=>x!==nxt);
+    }
+    gs.xp+=60;gs.sessionXp+=60;if(pct===100)gs.perfectExams++;
+  }
+  save();
+  const medal=passed?(pct>=90?'🏆':pct>=80?'⭐':'✅'):'❌';
+  $('app').innerHTML=wrapLesson(`<div class="result-wrap">
+    <div class="result-big">${medal}</div>
+    <div class="result-title">${passed?encourage():'Försök igen!'}</div>
+    <div class="result-sub">${ch.emoji} ${ch.name}</div>
+    <div class="result-banner ${passed?'good':'bad'}">${passed?`🎉 Grattis! ${pct}% rätt! +60 XP!`:`Du fick ${pct}% – du behöver ${PASS_PCT}% för att gå vidare.`}</div>
+    <div class="stat-row"><div class="stat-box"><div class="stat-val">${gs.gameCorrect}/${EXAM_SIZE}</div><div class="stat-lbl">Rätt</div></div><div class="stat-box"><div class="stat-val">${pct}%</div><div class="stat-lbl">Resultat</div></div><div class="stat-box"><div class="stat-val">${PASS_PCT}%</div><div class="stat-lbl">Krav</div></div></div>
+    ${passed?`<button class="action-btn btn-green" style="width:100%;margin-bottom:10px;" onclick="showMap()">Välj nästa kapitel ✨</button>`:`<button class="action-btn btn-orange" style="width:100%;margin-bottom:10px;" onclick="retryChapter()">Gör om kapitlet</button>`}
+  </div>`,100);
+  checkAchievements();
+}
+
+function retryChapter(){gs.currentLesson=0;gs.isExam=false;gs.flashWords=[];gs.flashIndex=0;gs.gameIndex=0;gs.gameCorrect=0;gs.sessionXp=0;gs.answered=false;save();loadFlashWords();}
+
+// ═══════════════════════════════════════════════════
+// DAILY + WEEKLY TAB
+// ═══════════════════════════════════════════════════
+function showDailyTab() {
+  const wc = WEEKLY_CHALLENGES[gs.currentWeeklyIdx % WEEKLY_CHALLENGES.length];
+  const allPersons = [...DEFAULT_PERSONS, ...(gs.customPersons||[])];
+
+  $('app').innerHTML=`<div class="slide-in">
+    ${renderNav('daily')}
+    ${renderTopbar(0,'#fbbf24')}
+
+    <div class="section-title">Daglig utmaning</div>
+    ${gs.dailyDoneToday
+      ? `<div class="daily-card" style="cursor:default;">
+          <div class="daily-icon">☀️</div>
+          <div><div class="daily-title">Klar för idag, ${firstName()}!</div><div class="daily-sub">Kom tillbaka imorgon!</div></div>
+          <div class="daily-badge">✓ Klar</div>
+         </div>`
+      : `<div class="daily-card" onclick="startDailyGame()">
+          <div class="daily-icon">⚡</div>
+          <div><div class="daily-title">Daglig utmaning</div><div class="daily-sub">5 frågor – dubbel XP!</div></div>
+          <div class="daily-badge">2× XP</div>
+         </div>`
+    }
+
+    <div class="section-title" style="margin-top:14px;">Veckans utmaning 🗓️</div>
+    ${gs.weeklyDoneThisWeek
+      ? `<div class="weekly-card done-card" style="cursor:default;">
+          <div class="weekly-top"><div class="weekly-label">Veckans utmaning</div><div class="weekly-badge">✓ Klar!</div></div>
+          <div class="weekly-phrase">${wc.phrase}</div>
+          <div class="weekly-sv">${wc.sv}</div>
+          <div style="color:rgba(255,255,255,.8);font-size:13px;font-weight:800;">Bra jobbat! Ny utmaning nästa vecka 🌟</div>
+         </div>`
+      : `<div class="weekly-card" onclick="showWeeklyDetail()">
+          <div class="weekly-top"><div class="weekly-label">Veckans utmaning</div><div class="weekly-badge">Ny!</div></div>
+          <div class="weekly-phrase">${wc.phrase}</div>
+          <div class="weekly-sv">${wc.sv}</div>
+          <div class="weekly-to">
+            <div class="weekly-avatar">${wc.icon}</div>
+            <div><div class="weekly-person">Säg detta till ${wc.target}</div><div class="weekly-hint">Tryck för detaljer →</div></div>
+          </div>
+         </div>`
+    }
+
+    <div class="section-title" style="margin-top:14px;">Mina personer</div>
+    <div style="background:#fff;border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);">
+      <div style="font-size:12px;color:var(--text2);font-weight:700;margin-bottom:10px;">Veckans utmaningar kan riktas mot dessa personer:</div>
+      <div id="person-chips">${renderPersonChips(allPersons)}</div>
+      <div style="margin-top:10px;display:flex;gap:8px;">
+        <input id="newPerson" class="write-input" style="margin:0;flex:1;" placeholder="Lägg till person..." maxlength="20"/>
+        <button class="action-btn" style="background:#ede9fe;color:#5b21b6;box-shadow:none;padding:10px 14px;flex-shrink:0;" onclick="addPerson()">+ Lägg till</button>
+      </div>
+    </div>
+
+    <div style="text-align:center;font-size:11px;color:var(--text3);font-weight:800;margin-top:12px;">Streak: ${gs.streak} 🔥 · ${gs.dailyDone} dagliga · ${gs.weeklyDone} veckoutmaningar</div>
+  </div>`;
+}
+
+function renderPersonChips(persons) {
+  return persons.map((p,i)=>`<span class="person-chip">${p.emoji} ${p.name}${i>=DEFAULT_PERSONS.length?`<span class="del" onclick="removePerson(${i-DEFAULT_PERSONS.length})">×</span>`:''}</span>`).join('');
+}
+
+function addPerson() {
+  const val=($('newPerson')||{}).value||'';
+  if(!val.trim())return;
+  gs.customPersons=gs.customPersons||[];
+  gs.customPersons.push({emoji:'🙂',name:val.trim()});
+  save();showDailyTab();
+}
+
+function removePerson(idx) {
+  gs.customPersons.splice(idx,1);save();showDailyTab();
+}
+
+function showWeeklyDetail() {
+  const wc = WEEKLY_CHALLENGES[gs.currentWeeklyIdx % WEEKLY_CHALLENGES.length];
+  const allPersons = [...DEFAULT_PERSONS, ...(gs.customPersons||[])];
+  $('app').innerHTML=`<div class="slide-in">
+    ${renderNav('daily')}
+    ${renderTopbar(0,'#667eea')}
+    <button class="back-btn" onclick="showDailyTab()">← Tillbaka</button>
+    <div style="background:linear-gradient(135deg,#667eea,#764ba2);border-radius:var(--radius);padding:24px;text-align:center;margin-bottom:14px;box-shadow:0 4px 16px rgba(102,126,234,.35);">
+      <div style="font-size:48px;margin-bottom:10px;">${wc.emoji}</div>
+      <div style="font-size:11px;font-weight:900;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;">Veckans utmaning</div>
+      <div style="font-size:28px;font-weight:900;color:#fff;margin-bottom:6px;">${wc.phrase}</div>
+      <div style="font-size:15px;color:rgba(255,255,255,.85);font-weight:700;">${wc.sv}</div>
+    </div>
+    <div style="background:#fff;border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:12px;">
+      <div style="font-size:13px;font-weight:900;color:var(--text);margin-bottom:8px;">Din uppgift den här veckan:</div>
+      <div style="font-size:13px;color:var(--text2);font-weight:700;line-height:1.7;">Säg <strong>"${wc.phrase}"</strong> till ${wc.target}.<br>Du kan öva på uttalet genom att trycka på lyssna-knappen.</div>
+      <div style="margin-top:12px;">${listenBtn(wc.phrase,'wclb')}</div>
+    </div>
+    <div style="background:#fff;border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:12px;">
+      <div style="font-size:13px;font-weight:900;color:var(--text);margin-bottom:10px;">Välj vem du ska säga det till:</div>
+      <div>${allPersons.map(p=>`<span class="person-chip" onclick="completeWeekly('${p.name}')" style="cursor:pointer;">${p.emoji} ${p.name}</span>`).join('')}</div>
+    </div>
+    <button class="action-btn btn-ghost" style="width:100%;" onclick="showDailyTab()">Gör det senare</button>
+  </div>`;
+}
+
+function completeWeekly(personName) {
+  gs.weeklyDoneThisWeek=true;gs.weeklyDone++;gs.lastWeeklyDate=getWeekId();
+  gs.xp+=50;gs.currentWeeklyIdx++;save();checkAchievements();
+  $('app').innerHTML=`<div class="slide-in">
+    ${renderNav('daily')}
+    <div class="result-wrap" style="padding-top:3rem;">
+      <div class="result-big">💬</div>
+      <div class="result-title">${encourage()}</div>
+      <div class="result-sub">Du sa det till ${personName}! +50 XP!</div>
+      <div style="background:#d1fae5;border-radius:var(--radius-sm);padding:14px;color:#065f46;font-weight:800;font-size:13px;margin-bottom:20px;">Det är modig av dig att prata serbiska på riktigt! 🌟<br>Ny utmaning nästa vecka.</div>
+      <button class="action-btn btn-green" style="width:100%;" onclick="showMap()">Fortsätt träna →</button>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════
+// DAILY GAME
+// ═══════════════════════════════════════════════════
+function startDailyGame(){
+  const availableChapters = gs.chaptersDone.length > 0 ? gs.chaptersDone : [0];
+  gs.currentChapter=availableChapters[Math.floor(Math.random()*availableChapters.length)];
+  gs.isBonus=false;
+  gs.flashWords=FALLBACK[gs.currentChapter]||FALLBACK[0];
+  gs.gameIndex=0;gs.gameCorrect=0;gs.sessionXp=0;gs.answered=false;
+  loadDailyQ();
+}
+
+async function loadDailyQ(){
+  if(gs.gameIndex>=5){endDaily();return;}
+  gs.answered=false;
+  $('app').innerHTML=`<div>${renderNav('daily')}<div class="loading-msg">Laddar fråga ${gs.gameIndex+1}/5...</div></div>`;
+  const types=['match','trueFalse','write','match','trueFalse'],type=types[gs.gameIndex%types.length];
+  const wl=gs.flashWords.map(w=>`${w.swedish}=${w.serbian_latin||w.serbian}`).join(',');
+  const name=firstName();
+  const prompt=`Serbisk övning typ "${type}" baserat på: ${wl}. Latinsk skrift. ${name&&name!=='du'?`Eleven heter ${name}.`:''} Svara BARA med JSON utan backticks: {"type":"${type}","swedish":"...","serbian":"...","serbian_latin":"...","emoji":"...","hint":"...","feedback_correct":"...","feedback_wrong":"..."${type==='match'?',"pairs":[{"swedish":"...","serbian":"..."},{"swedish":"...","serbian":"..."},{"swedish":"...","serbian":"..."},{"swedish":"...","serbian":"..."}]':type==='trueFalse'?',"shown_swedish":"...","shown_serbian":"...","is_correct":true':''},"xp":40}`;
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_API_KEY,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:700,messages:[{role:'user',content:prompt}]})});
+    if(!r.ok)throw new Error();
+    const d=await r.json(); gs.q=JSON.parse(d.content[0].text.replace(/```json|```/g,'').trim());
+  }catch(e){gs.q=buildFallback();gs.q.xp=40;}
+  renderDailyQ();
+}
+
+function renderDailyQ(){
+  const q=gs.q,sp=q.serbian_latin||q.serbian||'';
+  const tag=`<div class="game-tag daily-tag">⚡ Utmaning · Fråga ${gs.gameIndex+1}/5</div>`;
+  let inner='';
+  if(q.type==='match'){
+    const items=[...q.pairs.map(p=>({text:p.swedish,type:'sv',pair:p})),...q.pairs.map(p=>({text:p.serbian,type:'sr',pair:p}))].sort(()=>Math.random()-.5);
+    gs.matchItems=items;gs.matchSelected=null;gs.matchDone=[];
+    inner=`${tag}<div class="game-q">Para ihop orden</div><div class="game-hint">${q.hint||''}</div><div class="match-grid">${items.map((it,i)=>`<div class="match-item" id="mi${i}" onclick="selDM(${i})">${it.text}</div>`).join('')}</div><div id="fb"></div>`;
+  }else if(q.type==='trueFalse'){
+    inner=`${tag}<div class="game-q">Sant eller falskt?</div>${listenBtn(sp)}<div class="tf-word">${q.shown_serbian}</div><div class="tf-sv">= "${q.shown_swedish}"</div><div class="tf-row"><button class="tf-btn tf-sant" id="tf-y" onclick="checkDTF(true)">✓ Sant</button><button class="tf-btn tf-falskt" id="tf-n" onclick="checkDTF(false)">✗ Falskt</button></div><div id="fb"></div>`;
+  }else{
+    inner=`${tag}<div class="game-q">${q.emoji||''} ${q.swedish}</div><div class="game-hint">${q.hint||''}</div>${listenBtn(sp)}<input class="write-input" id="wi" type="text" placeholder="Skriv på serbiska…" autocomplete="off" autocorrect="off" spellcheck="false"/><div id="fb"></div><button class="action-btn" id="cb" onclick="checkDW()" style="width:100%;background:#fbbf24;color:#78350f;box-shadow:0 4px 0 #f59e0b;">Kontrollera</button>`;
+  }
+  $('app').innerHTML=`<div class="slide-in">${renderNav('daily')}<div class="topbar"><div class="prog-wrap"><div class="prog-bar" style="width:${gs.gameIndex/5*100}%;background:#fbbf24;"></div></div><div class="pill pill-xp">⭐ ${gs.xp}</div></div><div class="game-card" id="gc">${inner}</div></div>`;
+  if(q.type==='write')$('wi')?.addEventListener('keydown',e=>{if(e.key==='Enter'&&!gs.answered)checkDW();});
+  if(q.type==='trueFalse')speak(sp);
+}
+
+function selDM(i){
+  if(gs.answered)return;const items=gs.matchItems;if(gs.matchDone.includes(i))return;
+  if(gs.matchSelected===null){gs.matchSelected=i;$('mi'+i)?.classList.add('selected');}
+  else{const a=gs.matchSelected,b=i;$('mi'+a)?.classList.remove('selected');
+    const ok=items[a].pair===items[b].pair&&items[a].type!==items[b].type;
+    if(ok){playSound(true);[$('mi'+a),$('mi'+b)].forEach(el=>{if(el){el.classList.add('matched');el.onclick=null;}});gs.matchDone.push(a,b);gs.xp+=6;gs.sessionXp+=6;gs.matchedPairs++;showXpPop(6,$('mi'+b));save();if(gs.matchDone.length>=items.length){gs.gameCorrect++;setTimeout(()=>showDFB(true),300);}}
+    else{playSound(false);[$('mi'+a),$('mi'+b)].forEach(el=>{if(el){el.classList.add('wrong-fl');setTimeout(()=>el?.classList.remove('wrong-fl'),500);}});}
+    gs.matchSelected=null;}
+}
+function checkDTF(ans){if(gs.answered)return;gs.answered=true;const correct=ans===gs.q.is_correct;$('tf-y').disabled=true;$('tf-n').disabled=true;$('tf-y').classList.toggle('correct',gs.q.is_correct===true);$('tf-n').classList.toggle('correct',gs.q.is_correct===false);if(!correct)$(ans?'tf-y':'tf-n').classList.add('wrong');showDFB(correct);}
+function checkDW(){if(gs.answered)return;const val=($('wi')||{}).value||'';if(!val.trim())return;gs.answered=true;const correct=val.trim().toLowerCase()===gs.q.serbian.trim().toLowerCase();const inp=$('wi');if(inp){inp.disabled=true;inp.classList.add(correct?'correct':'wrong');}showDFB(correct);}
+
+function showDFB(correct){
+  const q=gs.q,xp=correct?(q.xp||40):6;
+  playSound(correct);gs.xp+=xp;gs.sessionXp+=xp;if(correct)gs.gameCorrect++;
+  const fb=$('fb');if(fb)fb.innerHTML=`<div class="feedback ${correct?'good':'bad'}">${correct?q.feedback_correct:q.feedback_wrong}<div><span class="xp-tag">+${xp} XP ⚡</span></div></div>`;
+  const gc=$('gc');if(gc){gc.classList.remove('pop','shake');void gc.offsetWidth;gc.classList.add(correct?'pop':'shake');}
+  showXpPop(xp,fb);save();
+  const btn=`<button class="action-btn btn-green" style="width:100%;margin-top:12px;" onclick="gs.gameIndex++;gs.answered=false;loadDailyQ();">Fortsätt →</button>`;
+  if(q.type==='write'){const cb=$('cb');if(cb)cb.outerHTML=btn;}
+  else if(gc&&(q.type!=='match'||gs.matchDone.length>=(gs.matchItems?.length||0)))gc.insertAdjacentHTML('beforeend',btn);
+}
+
+function endDaily(){
+  gs.dailyDoneToday=true;gs.dailyDone++;gs.streak++;gs.xp+=30;gs.lastDailyDate=new Date().toDateString();save();
+  checkAchievements();
+  $('app').innerHTML=`<div class="slide-in">${renderNav('daily')}<div class="result-wrap">
+    <div class="result-big">🌟</div>
+    <div class="result-title">${encourage()}</div>
+    <div class="result-sub">+30 XP streak-bonus!</div>
+    <div class="stat-row"><div class="stat-box"><div class="stat-val">${gs.sessionXp}</div><div class="stat-lbl">XP idag</div></div><div class="stat-box"><div class="stat-val">${gs.streak}</div><div class="stat-lbl">Streak 🔥</div></div><div class="stat-box"><div class="stat-val">${gs.dailyDone}</div><div class="stat-lbl">Totalt</div></div></div>
+    <button class="action-btn btn-green" style="width:100%;margin-bottom:10px;" onclick="showMap()">Fortsätt träna →</button>
+  </div></div>`;
+}
+
+// ═══════════════════════════════════════════════════
+// DICTIONARY
+// ═══════════════════════════════════════════════════
+const DICT=[
+  {sv:'hej',sr:'Zdravo',sc:'Здраво',pron:'zdra-vo',cat:'Hälsningar'},
+  {sv:'hejdå',sr:'Doviđenja',sc:'До виђења',pron:'do-vi-đe-nya',cat:'Hälsningar'},
+  {sv:'god morgon',sr:'Dobro jutro',sc:'Добро јутро',pron:'do-bro yut-ro',cat:'Hälsningar'},
+  {sv:'god kväll',sr:'Dobro veče',sc:'Добро вече',pron:'do-bro ve-če',cat:'Hälsningar'},
+  {sv:'god natt',sr:'Laku noć',sc:'Лаку ноћ',pron:'la-ku noć',cat:'Hälsningar'},
+  {sv:'tack',sr:'Hvala',sc:'Хвала',pron:'hva-la',cat:'Hälsningar'},
+  {sv:'varsågod',sr:'Molim',sc:'Молим',pron:'mo-lim',cat:'Hälsningar'},
+  {sv:'ursäkta',sr:'Izvinite',sc:'Извините',pron:'iz-vi-ni-te',cat:'Hälsningar'},
+  {sv:'förlåt',sr:'Žao mi je',sc:'Жао ми је',pron:'žao mi ye',cat:'Hälsningar'},
+  {sv:'ja',sr:'Da',sc:'Да',pron:'da',cat:'Hälsningar'},
+  {sv:'nej',sr:'Ne',sc:'Не',pron:'ne',cat:'Hälsningar'},
+  {sv:'hur mår du',sr:'Kako si',sc:'Као си',pron:'ka-ko si',cat:'Hälsningar'},
+  {sv:'bra',sr:'Dobro',sc:'Добро',pron:'do-bro',cat:'Hälsningar'},
+  {sv:'välkommen',sr:'Dobrodošli',sc:'Добродошли',pron:'do-bro-doš-li',cat:'Hälsningar'},
+  {sv:'ett',sr:'Jedan',sc:'Један',pron:'ye-dan',cat:'Siffror'},
+  {sv:'två',sr:'Dva',sc:'Два',pron:'dva',cat:'Siffror'},
+  {sv:'tre',sr:'Tri',sc:'Три',pron:'tri',cat:'Siffror'},
+  {sv:'fyra',sr:'Četiri',sc:'Четири',pron:'če-ti-ri',cat:'Siffror'},
+  {sv:'fem',sr:'Pet',sc:'Пет',pron:'pet',cat:'Siffror'},
+  {sv:'sex',sr:'Šest',sc:'Шест',pron:'šest',cat:'Siffror'},
+  {sv:'sju',sr:'Sedam',sc:'Седам',pron:'se-dam',cat:'Siffror'},
+  {sv:'åtta',sr:'Osam',sc:'Осам',pron:'o-sam',cat:'Siffror'},
+  {sv:'nio',sr:'Devet',sc:'Девет',pron:'de-vet',cat:'Siffror'},
+  {sv:'tio',sr:'Deset',sc:'Десет',pron:'de-set',cat:'Siffror'},
+  {sv:'tjugo',sr:'Dvadeset',sc:'Двадесет',pron:'dva-de-set',cat:'Siffror'},
+  {sv:'hundra',sr:'Sto',sc:'Сто',pron:'sto',cat:'Siffror'},
+  {sv:'röd',sr:'Crvena',sc:'Crвена',pron:'crve-na',cat:'Färger'},
+  {sv:'blå',sr:'Plava',sc:'Плава',pron:'pla-va',cat:'Färger'},
+  {sv:'grön',sr:'Zelena',sc:'Зелена',pron:'ze-le-na',cat:'Färger'},
+  {sv:'gul',sr:'Žuta',sc:'Жута',pron:'žu-ta',cat:'Färger'},
+  {sv:'svart',sr:'Crna',sc:'Црна',pron:'cr-na',cat:'Färger'},
+  {sv:'vit',sr:'Bela',sc:'Бела',pron:'be-la',cat:'Färger'},
+  {sv:'rosa',sr:'Roze',sc:'Розе',pron:'ro-ze',cat:'Färger'},
+  {sv:'lila',sr:'Ljubičasta',sc:'Љубичаста',pron:'lyu-bi-čas-ta',cat:'Färger'},
+  {sv:'hund',sr:'Pas',sc:'Пас',pron:'pas',cat:'Djur'},
+  {sv:'katt',sr:'Mačka',sc:'Мачка',pron:'mač-ka',cat:'Djur'},
+  {sv:'häst',sr:'Konj',sc:'Коњ',pron:'konj',cat:'Djur'},
+  {sv:'fågel',sr:'Ptica',sc:'Птица',pron:'pti-ca',cat:'Djur'},
+  {sv:'björn',sr:'Medved',sc:'Медвед',pron:'med-ved',cat:'Djur'},
+  {sv:'varg',sr:'Vuk',sc:'Вук',pron:'vuk',cat:'Djur'},
+  {sv:'vatten',sr:'Voda',sc:'Вода',pron:'vo-da',cat:'Mat'},
+  {sv:'mjölk',sr:'Mleko',sc:'Млеко',pron:'mle-ko',cat:'Mat'},
+  {sv:'kaffe',sr:'Kafa',sc:'Кафа',pron:'ka-fa',cat:'Mat'},
+  {sv:'bröd',sr:'Hleb',sc:'Хлеб',pron:'hleb',cat:'Mat'},
+  {sv:'kött',sr:'Meso',sc:'Месо',pron:'me-so',cat:'Mat'},
+  {sv:'fisk',sr:'Riba',sc:'Риба',pron:'ri-ba',cat:'Mat'},
+  {sv:'ägg',sr:'Jaje',sc:'Јаје',pron:'ya-ye',cat:'Mat'},
+  {sv:'äpple',sr:'Jabuka',sc:'Јабука',pron:'ya-bu-ka',cat:'Mat'},
+  {sv:'tomat',sr:'Paradajz',sc:'Парадајз',pron:'pa-ra-dajz',cat:'Mat'},
+  {sv:'pizza',sr:'Pica',sc:'Пица',pron:'pi-ca',cat:'Mat'},
+  {sv:'glass',sr:'Sladoled',sc:'Сладолед',pron:'sla-do-led',cat:'Mat'},
+  {sv:'tårta',sr:'Torta',sc:'Торта',pron:'tor-ta',cat:'Mat'},
+  {sv:'mamma',sr:'Mama',sc:'Мама',pron:'ma-ma',cat:'Familj'},
+  {sv:'pappa',sr:'Tata',sc:'Тата',pron:'ta-ta',cat:'Familj'},
+  {sv:'syster',sr:'Sestra',sc:'Сестра',pron:'ses-tra',cat:'Familj'},
+  {sv:'bror',sr:'Brat',sc:'Брат',pron:'brat',cat:'Familj'},
+  {sv:'farmor',sr:'Baka',sc:'Бака',pron:'ba-ka',cat:'Familj'},
+  {sv:'farfar',sr:'Deda',sc:'Деда',pron:'de-da',cat:'Familj'},
+  {sv:'son',sr:'Sin',sc:'Син',pron:'sin',cat:'Familj'},
+  {sv:'dotter',sr:'Ćerka',sc:'Ћерка',pron:'ćer-ka',cat:'Familj'},
+  {sv:'familj',sr:'Porodica',sc:'Породица',pron:'po-ro-di-ca',cat:'Familj'},
+  {sv:'huvud',sr:'Glava',sc:'Глава',pron:'gla-va',cat:'Kroppen'},
+  {sv:'ögon',sr:'Oči',sc:'Очи',pron:'o-či',cat:'Kroppen'},
+  {sv:'näsa',sr:'Nos',sc:'Нос',pron:'nos',cat:'Kroppen'},
+  {sv:'hand',sr:'Ruka',sc:'Рука',pron:'ru-ka',cat:'Kroppen'},
+  {sv:'fot',sr:'Noga',sc:'Нога',pron:'no-ga',cat:'Kroppen'},
+  {sv:'hjärta',sr:'Srce',sc:'Срце',pron:'sr-ce',cat:'Kroppen'},
+  {sv:'mage',sr:'Stomak',sc:'Стомак',pron:'sto-mak',cat:'Kroppen'},
+  {sv:'tröja',sr:'Majica',sc:'Мајица',pron:'ma-yi-ca',cat:'Kläder'},
+  {sv:'byxor',sr:'Pantalone',sc:'Панталоне',pron:'pan-ta-lo-ne',cat:'Kläder'},
+  {sv:'klänning',sr:'Haljina',sc:'Хаљина',pron:'hal-yi-na',cat:'Kläder'},
+  {sv:'jacka',sr:'Jakna',sc:'Јакна',pron:'yak-na',cat:'Kläder'},
+  {sv:'skor',sr:'Cipele',sc:'Ципеле',pron:'ci-pe-le',cat:'Kläder'},
+  {sv:'glad',sr:'Srećan',sc:'Срећан',pron:'sre-ćan',cat:'Känslor'},
+  {sv:'ledsen',sr:'Tužan',sc:'Тужан',pron:'tu-žan',cat:'Känslor'},
+  {sv:'arg',sr:'Ljut',sc:'Љут',pron:'lyut',cat:'Känslor'},
+  {sv:'rädd',sr:'Uplašen',sc:'Уплашен',pron:'up-la-šen',cat:'Känslor'},
+  {sv:'trött',sr:'Umoran',sc:'Уморан',pron:'u-mo-ran',cat:'Känslor'},
+  {sv:'kök',sr:'Kuhinja',sc:'Кухиња',pron:'ku-hi-nya',cat:'Hemmet'},
+  {sv:'sovrum',sr:'Spavaća soba',sc:'Спаваћа соба',pron:'spa-va-ća so-ba',cat:'Hemmet'},
+  {sv:'bord',sr:'Sto',sc:'Сто',pron:'sto',cat:'Hemmet'},
+  {sv:'fönster',sr:'Prozor',sc:'Прозор',pron:'pro-zor',cat:'Hemmet'},
+  {sv:'huset',sr:'Kuća',sc:'Кућа',pron:'ku-ća',cat:'Platser'},
+  {sv:'skolan',sr:'Škola',sc:'Школа',pron:'ško-la',cat:'Platser'},
+  {sv:'sjukhuset',sr:'Bolnica',sc:'Болница',pron:'bol-ni-ca',cat:'Platser'},
+  {sv:'parken',sr:'Park',sc:'Парк',pron:'park',cat:'Platser'},
+  {sv:'Belgrad',sr:'Beograd',sc:'Београд',pron:'be-o-grad',cat:'Platser'},
+  {sv:'Sverige',sr:'Švedska',sc:'Шведска',pron:'šved-ska',cat:'Platser'},
+  {sv:'buss',sr:'Autobus',sc:'Аутобус',pron:'a-u-to-bus',cat:'Transport'},
+  {sv:'tåg',sr:'Voz',sc:'Воз',pron:'voz',cat:'Transport'},
+  {sv:'bil',sr:'Auto',sc:'Ауто',pron:'a-u-to',cat:'Transport'},
+  {sv:'flygplan',sr:'Avion',sc:'Авион',pron:'a-vi-on',cat:'Transport'},
+  {sv:'idag',sr:'Danas',sc:'Данас',pron:'da-nas',cat:'Tid'},
+  {sv:'imorgon',sr:'Sutra',sc:'Сутра',pron:'sut-ra',cat:'Tid'},
+  {sv:'måndag',sr:'Ponedeljak',sc:'Понедељак',pron:'po-ne-del-yak',cat:'Tid'},
+  {sv:'söndag',sr:'Nedelja',sc:'Недеља',pron:'ne-del-ya',cat:'Tid'},
+  {sv:'matematik',sr:'Matematika',sc:'Математика',pron:'ma-te-ma-ti-ka',cat:'Skolan'},
+  {sv:'bok',sr:'Knjiga',sc:'Књига',pron:'knji-ga',cat:'Skolan'},
+  {sv:'läraren',sr:'Učitelj',sc:'Учитељ',pron:'u-či-telj',cat:'Skolan'},
+  {sv:'sol',sr:'Sunce',sc:'Сунце',pron:'sun-ce',cat:'Natur'},
+  {sv:'regn',sr:'Kiša',sc:'Киша',pron:'ki-ša',cat:'Natur'},
+  {sv:'snö',sr:'Sneg',sc:'Снег',pron:'sneg',cat:'Natur'},
+  {sv:'havet',sr:'More',sc:'Море',pron:'mo-re',cat:'Natur'},
+  {sv:'blomma',sr:'Cvet',sc:'Цвет',pron:'cvet',cat:'Natur'},
+  {sv:'pengar',sr:'Novac',sc:'Новац',pron:'no-vac',cat:'Shopping'},
+  {sv:'billig',sr:'Jeftin',sc:'Јефтин',pron:'yef-tin',cat:'Shopping'},
+  {sv:'dyr',sr:'Skup',sc:'Скуп',pron:'skup',cat:'Shopping'},
+  {sv:'fotboll',sr:'Fudbal',sc:'Фудбал',pron:'fud-bal',cat:'Sport'},
+  {sv:'musik',sr:'Muzika',sc:'Музика',pron:'mu-zi-ka',cat:'Sport'},
+  {sv:'dans',sr:'Ples',sc:'Плес',pron:'ples',cat:'Sport'},
+  {sv:'jag vill',sr:'Hoću',sc:'Хоћу',pron:'ho-ću',cat:'Fraser'},
+  {sv:'jag förstår inte',sr:'Ne razumem',sc:'Не разумем',pron:'ne ra-zu-mem',cat:'Fraser'},
+  {sv:'hjälp',sr:'Pomoć',sc:'Помоћ',pron:'po-moć',cat:'Fraser'},
+  {sv:'jag älskar dig',sr:'Volim te',sc:'Волим те',pron:'vo-lim te',cat:'Kärlek'},
+  {sv:'saknar dig',sr:'Nedostaješ mi',sc:'Недостајеш ми',pron:'ne-dos-ta-yeš mi',cat:'Kärlek'},
+  {sv:'du är söt',sr:'Sladak si',sc:'Сладак си',pron:'sla-dak si',cat:'Kärlek'},
+  {sv:'coolt',sr:'Kul',sc:'Кул',pron:'kul',cat:'Slang'},
+  {sv:'toppen',sr:'Super',sc:'Супер',pron:'su-per',cat:'Slang'},
+  {sv:'inga problem',sr:'Nema problema',sc:'Нема проблема',pron:'ne-ma pro-ble-ma',cat:'Slang'},
+  {sv:'jul',sr:'Božić',sc:'Божић',pron:'bo-žić',cat:'Kultur'},
+  {sv:'slava',sr:'Slava',sc:'Слава',pron:'sla-va',cat:'Kultur'},
+  {sv:'rakija',sr:'Rakija',sc:'Ракија',pron:'ra-ki-ya',cat:'Kultur'},
+];
+
+function showDict(){
+  $('app').innerHTML=`<div class="slide-in">${renderNav('dict')}${renderTopbar(Math.min(100,gs.xp/50),'#38bdf8')}
+    <div class="dict-card">
+      <div style="font-size:14px;font-weight:900;color:var(--text);margin-bottom:10px;">Svenska ↔ Serbiska <span style="font-size:10px;color:var(--text3);font-weight:700;">${DICT.length} ord</span></div>
+      <div class="dict-input-wrap">
+        <input class="dict-input" id="di" type="text" placeholder="Sök på svenska eller serbiska…" autocomplete="off"/>
+        <button class="dict-search-btn" onclick="doDict()">🔍</button>
+      </div>
+    </div>
+    <div id="dict-out"><div style="text-align:center;padding:1.5rem;color:var(--text3);font-size:13px;font-weight:800;">Skriv ett ord för att söka</div></div>
+  </div>`;
+  const inp=$('di');
+  if(inp){inp.addEventListener('keydown',e=>{if(e.key==='Enter')doDict();});inp.addEventListener('input',()=>{if(inp.value.length>=2)doDict();});}
+}
+
+function doDict(){
+  const val=($('di')||{}).value||'';if(!val.trim())return;
+  const out=$('dict-out');if(!out)return;
+  gs.dictLookups++;save();checkAchievements();
+  const q=val.toLowerCase().trim();
+  const results=DICT.filter(w=>w.sv.toLowerCase().includes(q)||w.sr.toLowerCase().includes(q)||w.sc.toLowerCase().includes(q)||w.cat.toLowerCase().includes(q)).slice(0,12);
+  if(!results.length){out.innerHTML=`<div style="text-align:center;padding:1.5rem;color:var(--text3);font-size:13px;font-weight:800;">Hittade inget för "${val}"</div>`;return;}
+  out.innerHTML=results.map(r=>`<div class="dict-result slide-in">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:5px;"><div class="dict-word">${r.sv}</div><div style="font-size:10px;font-weight:800;color:var(--text3);background:var(--bg);padding:2px 7px;border-radius:99px;">${r.cat}</div></div>
+    <div><span class="dict-pill lat">${r.sr}</span><span class="dict-pill cyr">${r.sc}</span></div>
+    ${listenBtn(r.sr,'lb_'+r.sv.replace(/\s/g,'_'))}
+    <div style="font-size:12px;color:var(--text2);font-weight:700;margin-top:6px;">🗣 Uttal: <em>${r.pron}</em></div>
+  </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════
+// ACHIEVEMENTS
+// ═══════════════════════════════════════════════════
+function showAch(){
+  const unl=gs.unlockedAchs.length;
+  $('app').innerHTML=`<div class="slide-in">${renderNav('ach')}${renderTopbar(Math.min(100,gs.xp/50),'#fbbf24')}
+    <div class="ach-header"><div style="font-size:26px;">🏅</div><div style="flex:1;"><div style="font-size:13px;font-weight:900;color:var(--text);margin-bottom:5px;">${unl} av ${ACHIEVEMENTS.length} badges</div><div class="ach-prog-wrap"><div class="ach-prog" style="width:${Math.round(unl/ACHIEVEMENTS.length*100)}%;"></div></div></div></div>
+    <div class="ach-grid">${ACHIEVEMENTS.map(a=>{const done=gs.unlockedAchs.includes(a.id);return `<div class="ach-card ${done?'unlocked':'ach-locked'}"><span class="ach-emoji">${a.emoji}</span><div class="ach-name">${a.name}</div><div class="ach-desc">${a.desc}</div>${done?`<div class="ach-done-tag">✓ Upplåst</div>`:''}</div>`;}).join('')}</div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════
+// PASSWORD PROTECTION
+// ═══════════════════════════════════════════════════
+const APP_PASSWORD = 'serbiska2026'; // Byt till eget lösenord!
+
+function showPasswordScreen() {
+  $('app').innerHTML=`<div class="slide-in"><div class="onboard-wrap">
+    <div class="onboard-flag">🔒</div>
+    <div class="onboard-title">Serbiska-appen</div>
+    <div class="onboard-sub">Ange lösenord för att fortsätta.</div>
+    <input class="name-input" id="pwInput" type="password" placeholder="Lösenord..." autocomplete="off"/>
+    <div id="pw-err" style="color:#ef4444;font-size:13px;font-weight:800;margin-bottom:10px;min-height:18px;"></div>
+    <button class="start-btn" onclick="checkPassword()">Öppna appen 🔓</button>
+  </div></div>`;
+  $('pwInput')?.focus();
+  $('pwInput')?.addEventListener('keydown',e=>{if(e.key==='Enter')checkPassword();});
+}
+
+function checkPassword() {
+  const val=($('pwInput')||{}).value||'';
+  if(val===APP_PASSWORD) {
+    sessionStorage.setItem('serbiska_auth','1');
+    startApp();
+  } else {
+    const err=$('pw-err');
+    if(err) err.textContent='Fel lösenord, försök igen!';
+    const inp=$('pwInput');
+    if(inp){inp.value='';inp.classList.add('wrong');setTimeout(()=>inp.classList.remove('wrong'),600);}
+  }
+}
+
+function startApp() {
+  if(!gs.userName||gs.userName==='du'){showOnboarding();}else{showMap();}
+}
+
+// ═══════════════════════════════════════════════════
+// START
+// ═══════════════════════════════════════════════════
+if(sessionStorage.getItem('serbiska_auth')==='1'){
+  startApp();
+} else {
+  showPasswordScreen();
+}
+</script>
+</body>
+</html>
